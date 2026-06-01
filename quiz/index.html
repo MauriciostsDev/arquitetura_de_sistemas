@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz · Arquitetura de Sistemas</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topo">
+    <h1>🏛️ Quiz — Arquitetura de Sistemas</h1>
+    <p class="sub">Questões objetivas geradas a partir das suas notas de estudo</p>
+  </header>
+
+  <main>
+    <!-- ============================ INÍCIO ============================ -->
+    <section id="tela-inicio" class="card">
+      <p class="resumo" id="resumo-banco"></p>
+
+      <fieldset>
+        <legend>Tópicos</legend>
+        <div class="acoes-topicos">
+          <button type="button" id="sel-todos" class="link">Selecionar todos</button>
+          <button type="button" id="sel-nenhum" class="link">Limpar</button>
+        </div>
+        <div id="lista-topicos" class="lista-topicos"></div>
+      </fieldset>
+
+      <div class="opcoes-linha">
+        <label class="campo">
+          <span>Quantidade de questões</span>
+          <select id="qtd">
+            <option value="todas">Todas</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="30">30</option>
+          </select>
+        </label>
+
+        <label class="campo check">
+          <input type="checkbox" id="embaralhar-alt" checked />
+          <span>Embaralhar alternativas</span>
+        </label>
+      </div>
+
+      <p id="aviso-inicio" class="aviso"></p>
+      <button id="btn-iniciar" class="btn-principal">Começar ▶</button>
+    </section>
+
+    <!-- ============================= QUIZ ============================= -->
+    <section id="tela-quiz" class="card" hidden>
+      <div class="progresso">
+        <div class="progresso-trilho"><div id="progresso-barra" class="progresso-barra"></div></div>
+        <span id="progresso-texto" class="progresso-texto"></span>
+      </div>
+
+      <span id="q-topico" class="chip"></span>
+      <h2 id="q-enunciado" class="enunciado"></h2>
+
+      <div id="q-alternativas" class="alternativas"></div>
+
+      <p id="q-explicacao" class="explicacao" hidden></p>
+      <button id="btn-proxima" class="btn-principal" hidden></button>
+    </section>
+
+    <!-- =========================== RESULTADO ========================== -->
+    <section id="tela-resultado" class="card" hidden>
+      <h2>Resultado</h2>
+      <div class="placar">
+        <div class="placar-nota" id="res-nota"></div>
+        <div id="res-pct" class="res-pct"></div>
+      </div>
+      <p id="res-msg" class="res-msg"></p>
+
+      <h3>Desempenho por tópico</h3>
+      <table id="res-tabela" class="tabela">
+        <thead><tr><th>Tópico</th><th>Acertos</th><th>Aproveitamento</th></tr></thead>
+        <tbody></tbody>
+      </table>
+
+      <div class="acoes-resultado">
+        <button id="btn-refazer" class="btn-principal">↻ Refazer (mesma seleção)</button>
+        <button id="btn-voltar" class="btn-secundario">⚙ Mudar tópicos</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="rodape">
+    <p>Conteúdo em <code>data/questoes.js</code> · engine genérica em <code>app.js</code></p>
+  </footer>
+
+  <!-- dados primeiro, engine depois -->
+  <script src="data/questoes.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
