@@ -15,6 +15,11 @@ status: em-estudo
 > [!tip] Trilha sugerida de leitura
 > Fundamentos → Componentes (estrutura) → Implementação & Qualidade → Distribuição & Ambientes → Frameworks. Siga os 🟢 na ordem se estiver começando.
 
+> [!info] Organização em pastas (com cores)
+> As notas estão organizadas em pastas por tema, cada uma com sua cor no explorador (snippet `cores-pastas`):
+> 🧩 `01 - Fundamentos` · 📦 `02 - Componentes` · 🛠️ `03 - Implementação e Qualidade` · 🌐 `04 - Distribuição e Ambientes` · 🧱 `05 - Frameworks (CCM e CORBA)` · ⭐ `06 - Referência`.
+> Os links `[[...]]` funcionam por nome do arquivo, então a navegação não muda com as pastas.
+
 ## 🧩 1. Fundamentos (os conceitos-base)
 
 Os tijolos mentais que aparecem em todo o resto.

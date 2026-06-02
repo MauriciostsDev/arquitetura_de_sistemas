@@ -1,0 +1,64 @@
+/* ============================================================================
+ *  Cores das pastas no explorador de arquivos (Obsidian)
+ *  Cada pasta de tema ganha uma cor + um ícone (emoji) antes do nome.
+ *  Para ligar/desligar: Configurações → Aparência → Snippets de CSS.
+ * ========================================================================== */
+
+/* Negrito leve em todas as pastas-tema, para destacá-las */
+.nav-folder-title[data-path^="01 - "],
+.nav-folder-title[data-path^="02 - "],
+.nav-folder-title[data-path^="03 - "],
+.nav-folder-title[data-path^="04 - "],
+.nav-folder-title[data-path^="05 - "],
+.nav-folder-title[data-path^="06 - "] {
+  font-weight: 600;
+  border-radius: 6px;
+}
+
+/* ---- 01 Fundamentos — azul ---- */
+.nav-folder-title[data-path="01 - Fundamentos"] {
+  color: #3b82f6;
+  border-left: 3px solid #3b82f6;
+  background: rgba(59, 130, 246, 0.08);
+}
+.nav-folder-title[data-path="01 - Fundamentos"] .nav-folder-title-content::before { content: "🧩 "; }
+
+/* ---- 02 Componentes — verde ---- */
+.nav-folder-title[data-path="02 - Componentes"] {
+  color: #16a34a;
+  border-left: 3px solid #16a34a;
+  background: rgba(22, 163, 74, 0.08);
+}
+.nav-folder-title[data-path="02 - Componentes"] .nav-folder-title-content::before { content: "📦 "; }
+
+/* ---- 03 Implementação e Qualidade — laranja ---- */
+.nav-folder-title[data-path="03 - Implementação e Qualidade"] {
+  color: #d97706;
+  border-left: 3px solid #d97706;
+  background: rgba(217, 119, 6, 0.08);
+}
+.nav-folder-title[data-path="03 - Implementação e Qualidade"] .nav-folder-title-content::before { content: "🛠️ "; }
+
+/* ---- 04 Distribuição e Ambientes — roxo ---- */
+.nav-folder-title[data-path="04 - Distribuição e Ambientes"] {
+  color: #7c3aed;
+  border-left: 3px solid #7c3aed;
+  background: rgba(124, 58, 237, 0.08);
+}
+.nav-folder-title[data-path="04 - Distribuição e Ambientes"] .nav-folder-title-content::before { content: "🌐 "; }
+
+/* ---- 05 Frameworks (CCM e CORBA) — vermelho ---- */
+.nav-folder-title[data-path="05 - Frameworks (CCM e CORBA)"] {
+  color: #dc2626;
+  border-left: 3px solid #dc2626;
+  background: rgba(220, 38, 38, 0.08);
+}
+.nav-folder-title[data-path="05 - Frameworks (CCM e CORBA)"] .nav-folder-title-content::before { content: "🧱 "; }
+
+/* ---- 06 Referência — verde-azulado (teal) ---- */
+.nav-folder-title[data-path="06 - Referência"] {
+  color: #0d9488;
+  border-left: 3px solid #0d9488;
+  background: rgba(13, 148, 136, 0.08);
+}
+.nav-folder-title[data-path="06 - Referência"] .nav-folder-title-content::before { content: "⭐ "; }
