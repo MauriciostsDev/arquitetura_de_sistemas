@@ -9,47 +9,56 @@ status: em-estudo
 
 # Interfaces e Contratos
 
-> [!summary] Em uma frase
-> Uma **interface** é o "contrato" público de um componente: a lista do que ele oferece para os outros usarem — **sem revelar como faz** por dentro.
+> [!summary] Resumo
+> Interface é a lista do que um componente oferece para os outros usarem, sem mostrar como faz por dentro. É um contrato.
 
-## 🎯 O que é
+## O que é
 
-A interface define **o que** um componente entrega, não **como**. Ela é a única parte visível de fora; todo o resto fica encapsulado ([[Empacotamento de Componentes]]).
+A interface diz **o que** o componente entrega (entradas e saídas). É a única parte que os outros enxergam; o resto fica escondido. Enquanto o contrato não muda, quem oferece e quem usa podem evoluir cada um do seu jeito.
 
-> [!note] Contrato
-> Quem oferece a interface **promete** cumprir aquilo (entrada → saída); quem usa **confia** na promessa sem olhar o interior. Enquanto o contrato não muda, os dois lados podem evoluir de forma independente — isso é o que garante o **baixo acoplamento** ([[Acoplamento e Coesão]]).
+## Exemplo do dia a dia
 
-## 🍔 Analogia do dia a dia — o cardápio
+O cardápio do restaurante. Ele lista o que você pode pedir (pizza, refrigerante). Você pede pelo nome e recebe o prato, sem saber como a cozinha prepara. Se o restaurante trocar o forno ou a receita, o cardápio continua igual e você continua pedindo do mesmo jeito.
 
-O **cardápio** de um restaurante é uma interface:
+## No código
 
-- ele lista **o que você pode pedir** (`pizza margherita`, `refrigerante`),
-- você pede pelo nome e recebe o prato,
-- você **não precisa saber** como a cozinha prepara, qual fogão usa, ou quem é o cozinheiro.
+A interface é o contrato; quem implementa cumpre. Dá pra ter várias implementações:
 
-Se o restaurante trocar o forno ou a receita interna, **o cardápio continua igual** — e você continua pedindo do mesmo jeito. Isso é uma interface estável escondendo a implementação.
+```ts
+interface Pagamento {
+  cobrar(pedidoId: string, valor: number): Promise<boolean>;
+}
 
-## 🧩 No diagrama UML
+class PagamentoStripe implements Pagamento {
+  cobrar(pedidoId: string, valor: number) {
+    return Promise.resolve(true); // usa a Stripe por dentro
+  }
+}
 
-No diagrama "Implementação de componentes" (Dinner Now), as **bolinhas e soquetes** (○ e ⊃) são interfaces:
+class PagamentoFake implements Pagamento {
+  cobrar() {
+    return Promise.resolve(true); // versão para testes
+  }
+}
+```
 
-- `MealOrdering`, `PaymentAuthorization`, `Kitchen` são os **contratos** entre os servidores.
-- A **bolinha (○)** = interface **fornecida** ("eu ofereço isto").
-- O **soquete (⊃)** = interface **requerida** ("eu preciso disto").
-- Eles se encaixam: um componente fornece, o outro consome.
+Quem usa só conhece `Pagamento`. Trocar Stripe por outro provedor não quebra nada.
 
-## ✅ Por que importa
+## Comparação com Clean Architecture
 
-- Permite **trocar a implementação** sem quebrar quem usa (basta manter o contrato).
-- Permite **times independentes** trabalhando em paralelo, cada um só conhecendo as interfaces alheias.
-- É a base da **abstração** ([[Abstração]]) e do **baixo acoplamento** ([[Acoplamento e Coesão]]).
+Interface é a peça central da Clean Architecture: o núcleo define a interface e a borda (banco, API, framework) implementa. Por isso dá pra trocar a borda sem tocar no núcleo. Ver [[Clean Architecture]].
 
-## 🔗 Relacionados
+## Sobre as "bolinhas e soquetes" dos diagramas
 
-- [[Empacotamento de Componentes]]
+Em diagramas UML de componentes aparecem dois símbolos: a bolinha (o) é a interface **fornecida** ("eu ofereço isto") e o soquete (semicírculo) é a interface **requerida** ("eu preciso disto"). Eles se encaixam: um componente oferece, o outro consome.
+
+## Relacionados
+
 - [[Abstração]]
+- [[Múltiplas Interfaces]]
+- [[Princípio de Substituição de Liskov]]
 - [[Acoplamento e Coesão]]
-- [[Middleware]]
+- [[Clean Architecture]]
 
 ---
 *Estudo iniciado em 2026-06-01*

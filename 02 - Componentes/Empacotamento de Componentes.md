@@ -9,92 +9,67 @@ status: em-estudo
 
 # Empacotamento de Componentes
 
-> [!summary] Em uma frase
-> **Empacotar componentes** é juntar num mesmo "saco" tudo que faz parte da mesma função e, depois, só se preocupar com **o que cada saco entrega** — não com o que tem dentro dele.
+> [!summary] Resumo
+> Empacotar é juntar num mesmo pacote tudo que faz parte da mesma função, e depois só olhar para o que cada pacote entrega.
 
-## 🎯 A ideia central
+## O que é
 
-Por trás de qualquer sistema existem dezenas (ou centenas) de pedacinhos de código: classes, funções, serviços. Se o arquiteto tivesse que pensar em cada pedacinho separado, enlouqueceria.
+Um sistema tem centenas de pedaços de código. Pensar em cada um separado é impossível. A saída é **agrupar por função**: cada grupo vira um pacote. Aí você raciocina sobre poucos blocos, não sobre as peças soltas.
 
-A solução é **agrupar por funcionalidade**. Cada grupo vira um **pacote**, e o arquiteto passa a raciocinar sobre poucos blocos que conversam entre si — não sobre as peças soltas.
+## Exemplo do dia a dia
 
-## 🍔 Exemplo: App de delivery (tipo iFood)
-
-Pensa num app de delivery. Agrupando tudo por funcionalidade, surgem quatro pacotes:
+No app de delivery, agrupando por função aparecem quatro pacotes:
 
 | Pacote | O que cuida |
 |--------|-------------|
-| **Usuários** | login, cadastro |
-| **Catálogo** | restaurantes, cardápios |
-| **Pagamentos** | cobrança, cartão, Pix |
-| **Entrega** | rota, rastreio |
+| Usuários | login, cadastro |
+| Catálogo | restaurantes, cardápios |
+| Pagamentos | cobrança, cartão, Pix |
+| Entrega | rota, rastreio |
 
-```
-                    ┌─────────────────┐
-                    │  Usuário (app)  │
-                    └────────┬────────┘
-                             ↓
-   ╔═══════════════════════════════════════════════════════╗
-   ║  App de delivery  (componentes agrupados por função)   ║
-   ║                                                        ║
-   ║  ┌──────────┐  ┌──────────┐  ┌────────────┐  ┌───────┐ ║
-   ║  │ Usuários │→ │ Catálogo │→ │ Pagamentos │→ │Entrega│ ║
-   ║  │  login   │  │restaurant│  │ cartão,Pix │  │ rota  │ ║
-   ║  │ cadastro │  │   menu   │  │            │  │rastreio│║
-   ║  └──────────┘  └──────────┘  └────────────┘  └───────┘ ║
-   ╚═══════════════════════════════════════════════════════╝
-```
+Abrindo o pacote "Pagamentos": por dentro tem validar cartão, falar com o banco e gerar recibo. Mas o resto do app só usa uma porta de entrada: `cobrar(pedido)`. O interior fica escondido.
 
-Visto pelos olhos do arquiteto: **quatro pacotes**, cada um com função clara, conversando entre si. Nenhum detalhe interno aparece — só o que cada bloco faz.
+## No código
 
-## 🔒 Abrindo um pacote: a interface esconde o interior
+O pacote expõe só o que o resto precisa usar; o resto fica privado:
 
-Esse é o ponto mais importante. Vamos "abrir" o pacote de **Pagamentos**:
+```ts
+// pagamentos.ts — o pacote
+function validarCartao() { /* interno */ }
+function chamarBanco() { /* interno */ }
+function gerarRecibo() { /* interno */ }
 
-```
-                    ┌────────────────────────────────────────┐
-  ┌─────────────┐   │ Pacote: Pagamentos                     │
-  │ Resto do app│ → │ ┌────────────────────────────────────┐ │
-  └─────────────┘   │ │ cobrar(pedido) → confirmação       │ │  ← INTERFACE
-                    │ │ (a única coisa que os outros veem) │ │
-                    │ └────────────────────────────────────┘ │
-                    │                                        │
-                    │  componentes internos (escondidos):    │
-                    │  • Validar cartão   (checa dados)      │
-                    │  • Chamar banco     (autoriza valor)   │
-                    │  • Gerar recibo     (registra venda)   │
-                    └────────────────────────────────────────┘
+// única coisa exportada (a "porta" do pacote):
+export function cobrar(pedidoId: string, valor: number): boolean {
+  validarCartao();
+  chamarBanco();
+  gerarRecibo();
+  return true;
+}
 ```
 
-Por dentro, Pagamentos tem vários componentes (validar cartão, falar com o banco, gerar recibo). Mas o resto do app **não precisa saber de nada disso** — ele só usa a **interface**, ou seja, a função `cobrar(pedido)`.
+```ts
+// resto do app — só enxerga isto:
+import { cobrar } from "./pagamentos";
+cobrar("pedido-123", 50);
+```
 
-> [!important] Abstrair
-> Usar a função **sem se preocupar com o conteúdo**. Você chama `cobrar(pedido)` e recebe uma confirmação; como isso acontece por dentro é problema do pacote, não seu.
+## Comparação com Clean Architecture
 
-## 🧩 Conceitos-chave
+Empacotar por função é parecido com separar por responsabilidade na Clean Architecture: cada bloco cuida de uma coisa e conversa com os outros só pela porta de entrada (interface). Ver [[Clean Architecture]].
 
-> [!note] Interface
-> O "contrato" público do pacote: o conjunto de funções que ele expõe para os outros usarem. É a **única** coisa visível de fora.
+## Por que é bom
 
-> [!note] Encapsulamento (information hiding)
-> Esconder os detalhes internos atrás da interface. Quem usa o pacote não vê — nem deveria ver — como ele funciona por dentro.
+- Menos complexidade: poucos blocos para pensar.
+- Manutenção isolada: troca o interior sem afetar quem usa.
+- Times independentes e reuso mais fácil.
 
-> [!note] Abstração
-> Pensar no **o quê** (o que o pacote entrega) em vez do **como** (como ele faz internamente).
+## Relacionados
 
-## ✅ Por que isso é bom?
-
-- **Menos complexidade**: o arquiteto raciocina sobre poucos blocos, não sobre centenas de peças.
-- **Manutenção isolada**: dá pra trocar o "Chamar banco" por outro provedor sem mexer no resto do app, desde que a interface `cobrar(pedido)` continue igual.
-- **Times independentes**: cada pacote pode ser cuidado por um time diferente.
-- **Reuso**: um pacote com interface clara pode ser reaproveitado em outros sistemas.
-
-## 🔗 Relacionados
-
-- [[Acoplamento e Coesão]]
-- [[Interfaces e Contratos]]
 - [[Abstração]]
-
+- [[Interfaces e Contratos]]
+- [[Acoplamento e Coesão]]
+- [[Componentes]]
 
 ---
 *Estudo iniciado em 2026-06-01*

@@ -9,31 +9,66 @@
   "colorGroups": [
     {
       "query": "path:\"01 - Fundamentos\"",
-      "color": { "a": 1, "rgb": 3900150 }
+      "color": {
+        "a": 1,
+        "rgb": 3900150
+      }
     },
     {
       "query": "path:\"02 - Componentes\"",
-      "color": { "a": 1, "rgb": 1483594 }
+      "color": {
+        "a": 1,
+        "rgb": 1483594
+      }
     },
     {
       "query": "path:\"03 - Implementação e Qualidade\"",
-      "color": { "a": 1, "rgb": 14251782 }
+      "color": {
+        "a": 1,
+        "rgb": 14251782
+      }
     },
     {
       "query": "path:\"04 - Distribuição e Ambientes\"",
-      "color": { "a": 1, "rgb": 8141549 }
+      "color": {
+        "a": 1,
+        "rgb": 8141549
+      }
     },
     {
       "query": "path:\"05 - Frameworks (CCM e CORBA)\"",
-      "color": { "a": 1, "rgb": 14427686 }
+      "color": {
+        "a": 1,
+        "rgb": 14427686
+      }
     },
     {
       "query": "path:\"06 - Referência\"",
-      "color": { "a": 1, "rgb": 889992 }
+      "color": {
+        "a": 1,
+        "rgb": 889992
+      }
+    },
+    {
+      "query": "path:\"07 - Simulados\"",
+      "color": {
+        "a": 1,
+        "rgb": 14362487
+      }
+    },
+    {
+      "query": "path:\"08 - Processos e Gestão\"",
+      "color": {
+        "a": 1,
+        "rgb": 5195493
+      }
     },
     {
       "query": "file:Bem-vindo",
-      "color": { "a": 1, "rgb": 16777215 }
+      "color": {
+        "a": 1,
+        "rgb": 16777215
+      }
     }
   ],
   "collapse-display": true,
@@ -46,6 +81,6 @@
   "repelStrength": 10,
   "linkStrength": 1,
   "linkDistance": 250,
-  "scale": 0.46822130772748005,
+  "scale": 0.70233196159122,
   "close": true
 }

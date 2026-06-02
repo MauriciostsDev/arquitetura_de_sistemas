@@ -10,108 +10,66 @@ status: em-estudo
 
 # Framework CCM (CORBA Component Model)
 
-> [!summary] Em uma frase
-> O **CCM** é um framework de componentes **do lado do servidor** que facilita **criar e instalar** aplicações distribuídas por componentes — basicamente, um "padrão de fábrica" para transformar objetos [[CORBA]] em componentes prontos para plugar.
+> [!summary] Resumo
+> O CCM é um framework do lado do servidor que padroniza criar e instalar aplicações feitas de componentes. Pense num "padrão de fábrica" para transformar objetos [[CORBA]] em peças prontas para plugar.
 
-## 🎯 A ideia, bem simples
+## O que é
 
-Montar uma aplicação distribuída na mão é trabalhoso: você teria que cuidar de comunicação, empacotamento, instalação e execução de cada peça. O **CCM padroniza tudo isso**. Você foca em escrever o componente; o framework cuida da "burocracia" de distribuir, empacotar, instalar e rodar.
+Montar uma aplicação distribuída na mão dá muito trabalho: comunicação, empacotamento, instalação e execução de cada peça. O CCM padroniza isso. Você escreve o componente; o framework cuida da burocracia.
 
-É um framework **server-side** (roda no servidor) e os componentes podem ser de vários tipos, como vimos em [[Componentes]].
+## Exemplo do dia a dia
 
-## 🍔 Comparação com o mundo real — montar móvel com padrão IKEA
+Móvel modular padrão IKEA: encaixes padronizados, manual de montagem e caixas padronizadas. O CCM é esse "padrão IKEA" do software: encaixe, empacotamento e instalação iguais, então qualquer peça monta com qualquer outra.
 
-Pensa num móvel modular padrão IKEA:
+## Os 2 níveis
 
-- cada peça tem **encaixes padronizados** (você sabe onde conecta o quê),
-- vem com **manual de montagem** (instalação padronizada),
-- e cabe em **caixas padronizadas** (empacotamento).
+- **Básico**: jeito simples de transformar um objeto [[CORBA]] em componente.
+- **Estendido**: recursos a mais, como portas de comunicação (ver abaixo), atributos e o "home".
 
-O CCM é esse "padrão IKEA" para componentes de software: encaixes, empacotamento e instalação **todos padronizados**, então qualquer peça monta com qualquer outra.
+As "portas": **faceta** = interface que o componente oferece ("eu forneço isto"); **receptáculo** = interface que ele precisa ("eu dependo disto"); **home** = a fábrica que cria as instâncias. É o mesmo papo de [[Interfaces e Contratos]]: oferecido x requerido.
 
-## 🧩 Os 2 níveis de componentes do CCM
+## Os 5 modelos (o ciclo de vida do componente)
 
-| Nível | O que oferece |
-|-------|---------------|
-| **Básico** | uma forma **simplificada** de distribuir um objeto [[CORBA]] como componente (o essencial para plugar) |
-| **Estendido** | recursos mais ricos: **portas** de comunicação (facetas, receptáculos, eventos), atributos e *home* — para componentes mais sofisticados |
+| Modelo | O que define | Liga com |
+|--------|--------------|----------|
+| Abstrato | atributos, portas e home | [[Interfaces e Contratos]] |
+| De Programação | a [[CIDL]] e o [[CIF]] | [[Implementação de Componentes]] |
+| De Empacotamento | como empacotar | [[Empacotamento de Componentes]] |
+| De Implantação | como instalar | [[Distribuição de Componentes]] |
+| De Execução | onde rodar (os [[Containers]]) | [[Ambiente de Componentes]] |
 
-> [!note] As "portas" (jeito simples)
-> - **Faceta** = uma interface que o componente **oferece** ("eu forneço isto"). → ○
-> - **Receptáculo** = uma interface que o componente **precisa** ("eu dependo disto"). → ⊃
-> - **Home** = o "gerente de fábrica" que **cria e administra** as instâncias do componente.
->
-> É o mesmo papo de [[Interfaces e Contratos]]: oferecido vs. requerido.
+Para decorar: descrevo (abstrato), implemento (programação), empacoto, instalo, rodo.
 
-## 🗂️ Os 5 modelos do CCM
+## No código
 
-> [!important] O texto trouxe as descrições; aqui vão com os nomes
-> Cada "modelo" cuida de uma etapa da vida do componente.
-
-| # | Modelo | O que define (descrição do material) | Conecta com |
-|---|--------|--------------------------------------|-------------|
-| 1 | **Abstrato** | os **atributos, portas de comunicação e home** dos componentes | [[Interfaces e Contratos]] |
-| 2 | **De Programação** | composto pela **[[CIDL]]** (Component Implementation Definition Language) e pelo **[[CIF]]** (Component Implementation Framework) | [[Implementação de Componentes]] |
-| 3 | **De Empacotamento** | como os componentes e suas implementações devem ser **empacotados** | [[Empacotamento de Componentes]] |
-| 4 | **De Implantação (Deployment)** | um **mecanismo padrão para instalar** aplicações | [[Distribuição de Componentes]] |
-| 5 | **De Execução** | o **ambiente de execução** para as instâncias do componente (os **[[Containers]]**) | [[Ambiente de Componentes]] |
-
-> [!tip] Como decorar
-> Pense no **ciclo de vida**: eu **descrevo** o componente (1 abstrato) → **implemento** (2 programação) → **empacoto** (3) → **instalo** (4 deployment) → **rodo** (5 execução). É só seguir do nascimento ao funcionamento.
-
-## 🧠 Comparação com a Clean Architecture
-
-> [!info] Conexão com [[Clean Architecture]]
-> O CCM e a Clean Architecture **não são a mesma coisa**, mas se encaixam:
->
-> - **CCM** é um **framework de infraestrutura** (a borda externa da Clean Architecture: "frameworks & drivers"). Ele resolve **distribuição, empacotamento, instalação e execução** — tudo **detalhe**, não regra de negócio.
-> - O **Modelo Abstrato** (portas: facetas/receptáculos) é o que mais lembra a Clean Architecture: são **interfaces** que separam o que o componente **oferece** do que **requer** — exatamente as fronteiras (boundaries) que mantêm o núcleo desacoplado.
->
-> **O cuidado de sempre:** sua regra de negócio não deveria depender do CCM. O CCM fica na **borda**; o núcleo fala só com **interfaces**. Se trocar o CCM te obrigasse a reescrever o domínio, a separação estaria errada.
-
-## 💻 Exemplo em React + TypeScript
-
-As **portas** do CCM (faceta = oferecida, receptáculo = requerida) têm um paralelo direto em TS/React: o que o componente **provê** vs. o que ele **recebe via props** (injeção).
-
-```ts
-// FACETA: interface que o componente OFERECE para os outros usarem
-export interface ServicoPedido {
-  criar(itens: string[]): Promise<string>; // retorna id do pedido
-}
-
-// RECEPTÁCULO: interface que o componente PRECISA receber de fora
-export interface GatewayPagamento {
-  cobrar(pedidoId: string, valor: number): Promise<{ ok: boolean }>;
-}
-```
+As portas têm paralelo direto em TS: o que o componente oferece x o que recebe de fora (props):
 
 ```tsx
-// O componente React "Checkout" expõe um comportamento (faceta) e
-// DEPENDE de um gateway injetado por props (receptáculo) — desacoplado.
-function Checkout({ gateway }: { gateway: GatewayPagamento }) {  // ⊃ receptáculo
-  async function finalizar() {
-    const { ok } = await gateway.cobrar("pedido-123", 50);
-    alert(ok ? "Pago!" : "Erro");
-  }
-  return <button onClick={finalizar}>Finalizar pedido</button>;
+// receptáculo: precisa de um pagamento vindo de fora
+function Checkout({ gateway }: { gateway: { cobrar(v: number): Promise<boolean> } }) {
+  return <button onClick={() => gateway.cobrar(50)}>Finalizar</button>;
 }
 
-// "Home" = a fábrica que cria a instância já com suas dependências plugadas
-function criarCheckout(gateway: GatewayPagamento) {
+// "home": a fábrica que cria a instância já com a dependência plugada
+function criarCheckout(gateway: { cobrar(v: number): Promise<boolean> }) {
   return <Checkout gateway={gateway} />;
 }
 ```
 
-> [!note] A ponte
-> `Checkout` **oferece** um comportamento (faceta) e **requer** um `GatewayPagamento` (receptáculo), recebido de fora — igual ao Modelo Abstrato do CCM. A função `criarCheckout` faz o papel do **home** (cria a instância com as dependências prontas).
+## Hoje em dia
 
-## 🔗 Relacionados
+CCM é legado, quase não se usa. O que sobrou e segue forte é a **ideia**: padronizar empacotamento, instalação e execução de componentes. Isso virou **containers Docker**, **Kubernetes**, **serverless** e plataformas como **Spring**. Quando você faz deploy de um microserviço hoje, está vivendo a mesma ideia que o CCM tentou padronizar.
+
+## Comparação com Clean Architecture
+
+O CCM é infraestrutura (borda). O Modelo Abstrato (facetas/receptáculos) são as interfaces que mantêm o núcleo solto. Cuidado: a regra de negócio não deveria depender do CCM. Ver [[Clean Architecture]].
+
+## Relacionados
 
 - [[CORBA]]
-- [[Ambiente de Componentes]]
-- [[Distribuição de Componentes]]
-- [[Empacotamento de Componentes]]
-- [[Implementação de Componentes]]
+- [[CIDL]]
+- [[CIF]]
+- [[Containers]]
 - [[Interfaces e Contratos]]
 - [[Clean Architecture]]
 

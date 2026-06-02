@@ -665,6 +665,115 @@ window.BANCO_QUESTOES = [
     ],
     correta: 0,
     explicacao: "Cross-cutting concerns ficam centralizadas em 'aspectos', mantendo a lógica limpa. É como o sistema de incêndio do prédio."
+  },
+
+  /* ============================================================================
+   *  Simulado 1 — questões de prova (Provisionamento e Componentes)
+   * ========================================================================== */
+  {
+    topico: "Modelos de Desenvolvimento",
+    enunciado: "A metodologia de gestão deve contemplar quantas fases forem necessárias para garantir escopo, tempo, custo e qualidade. Qual modelo de desenvolvimento essas fases devem seguir?",
+    alternativas: ["Cascata", "Cascata com retroalimentação", "Espiral", "Incremental", "Iterativo e incremental"],
+    correta: 4,
+    explicacao: "Iterativo e incremental: repete ciclos e entrega partes que vão crescendo. É a base do ágil."
+  },
+  {
+    topico: "Níveis de Modelo",
+    enunciado: "Qual modelo é independente do tipo de software ou de tecnologia e representa o problema a ser resolvido?",
+    alternativas: ["Modelo de Implementação", "Modelo de Especificação", "Modelo de Projeto", "Modelo de Requisitos", "Modelo Conceitual"],
+    correta: 4,
+    explicacao: "O Modelo Conceitual descreve só o problema, sem amarrar a nenhuma tecnologia."
+  },
+  {
+    topico: "Componentes",
+    enunciado: "Sobre os componentes de um sistema, todas as afirmações são verdadeiras, EXCETO:",
+    alternativas: [
+      "Podem ser definidos desde a primeira iteração do projeto",
+      "O nível de abstração é, geralmente, alto",
+      "Devem ser projetados buscando alta coesão e baixo acoplamento",
+      "Devem ter interfaces bem definidas, de preferência uma para cada serviço",
+      "Seguindo a alta coesão, cada componente deve ter no máximo 3 interfaces"
+    ],
+    correta: 4,
+    explicacao: "Falsa (por isso é a resposta): não existe limite de 3 interfaces. Um componente pode oferecer quantas fizerem sentido."
+  },
+  {
+    topico: "Framework CCM (CORBA Component Model)",
+    enunciado: "São características que levaram à especificação do Modelo de Componentes CORBA, EXCETO:",
+    alternativas: [
+      "Falta de flexibilidade para estender as funcionalidades dos objetos",
+      "Requisitos não funcionais eram especificados junto com os métodos de negócio",
+      "Necessidade de especialização das interfaces (conexões) entre objetos",
+      "Dificuldade de configurar e usar aplicações em padrões anteriores",
+      "Necessidade da existência de um mecanismo único de implementação"
+    ],
+    correta: 4,
+    explicacao: "Falsa (por isso é a resposta): o CORBA/CCM não buscava um mecanismo único de implementação."
+  },
+  {
+    topico: "Casos de Uso (include x extend)",
+    enunciado: "No estacionamento, ao registrar a entrada o cliente SEMPRE recebe um ticket impresso. Qual o relacionamento entre Registrar Entrada e Gerar Ticket Impresso?",
+    alternativas: [
+      "include (o ticket é sempre gerado, é obrigatório)",
+      "extend (o ticket é opcional na entrada)",
+      "extend (de Gerar Fatura para Registrar Saída)",
+      "include, porém opcional",
+      "generalização"
+    ],
+    correta: 0,
+    explicacao: "É include: o ticket é sempre executado (obrigatório). Regra: include = sempre; extend = às vezes."
+  },
+  {
+    topico: "Empacotamento de Componentes",
+    enunciado: "O usuário de um componente é isolado de como os dados são guardados ou as funções executadas; ele depende da especificação, não da implementação. Qual princípio?",
+    alternativas: ["Encapsulamento", "Reusabilidade", "Independência", "Extensibilidade", "Produtividade"],
+    correta: 0,
+    explicacao: "Encapsulamento: esconder o interior atrás da interface; quem usa só conhece a especificação."
+  },
+  {
+    topico: "Arquitetura de Sistemas",
+    enunciado: "Sobre a estratégia tradicional que analisa o fluxo (workflow) do sistema, é correto afirmar:",
+    alternativas: [
+      "Essa estratégia dispensa o levantamento de requisitos",
+      "Sistemas distribuídos não podem ser representados por análise de fluxo",
+      "O objetivo principal é definir componentes reusáveis",
+      "Todas as afirmações estão erradas",
+      "As operações são representadas por componentes, ordenados pela sequência dessas operações"
+    ],
+    correta: 4,
+    explicacao: "Nessa estratégia, os componentes são modelados na ordem do fluxo de operações."
+  },
+  {
+    topico: "Arquitetura de Sistemas",
+    enunciado: "Sobre arquitetura de sistemas, todas as afirmações são verdadeiras, EXCETO:",
+    alternativas: [
+      "Pode ser vista como um processo e também como um artefato",
+      "A especificação pode ser feita após o levantamento de requisitos (funcionais e não funcionais)",
+      "Diagramas de componentes, de empacotamento e de distribuição (UML) servem na especificação",
+      "Em OO, as classes ajudam a identificar os componentes",
+      "É tarefa da arquitetura construir o projeto detalhado dos componentes individuais"
+    ],
+    correta: 4,
+    explicacao: "Falsa (por isso é a resposta): o projeto detalhado de cada componente é do design/construção, não da arquitetura."
+  },
+  {
+    topico: "Arquitetura em Camadas",
+    enunciado: "Qual é a característica principal da arquitetura em camadas?",
+    alternativas: [
+      "Um repositório central de dados",
+      "Os dados são gerados por um componente e consumidos pelos outros",
+      "Depende de uma infraestrutura de comunicação para implementar",
+      "Cada camada depende exclusivamente dos serviços da camada inferior"
+    ],
+    correta: 3,
+    explicacao: "Cada camada usa só os serviços da camada de baixo (separação e independência)."
+  },
+  {
+    topico: "Grupos de Processos de Projeto",
+    enunciado: "Desenvolver o termo de abertura do projeto pertence a qual grupo de processos?",
+    alternativas: ["Iniciação", "Planejamento", "Execução", "Monitoramento e Controle", "Encerramento"],
+    correta: 0,
+    explicacao: "O termo de abertura abre o projeto, logo pertence à Iniciação (a primeira fase)."
   }
 
 ];

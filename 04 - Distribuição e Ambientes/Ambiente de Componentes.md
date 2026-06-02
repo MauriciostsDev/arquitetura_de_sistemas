@@ -10,103 +10,58 @@ status: em-estudo
 
 # Ambiente de Componentes
 
-> [!summary] Em uma frase
-> Um **ambiente de componentes** é o "lugar" (um ambiente de objetos distribuídos) onde os componentes rodam, que oferece **serviços prontos de infraestrutura** (transações, segurança, concorrência) — desde que o componente siga as **regras padrão** desse ambiente.
+> [!summary] Resumo
+> É o "lugar" onde os componentes rodam, que já entrega serviços prontos (transação, segurança, concorrência). O componente só segue as regras da casa e usa.
 
-## 🎯 A ideia, bem simples
+## O que é
 
-Um componente sozinho não faz tudo. Ele precisa de coisas chatas e repetidas: controlar transações, cuidar de segurança, lidar com vários usuários ao mesmo tempo (concorrência). Em vez de cada componente reimplementar isso, **o ambiente entrega de graça** — o componente só precisa **seguir as regras da casa** para "plugar" e usar.
+Um componente não quer cuidar de coisa chata e repetida: controlar transação, segurança, vários usuários ao mesmo tempo. O ambiente entrega isso pronto. O componente só precisa seguir as regras padrão para plugar e usar. Ver [[Serviços de Infraestrutura]].
 
-> [!note] Definição do material
-> "Ambiente de componente é um meio ambiente de **objetos distribuídos**. Os componentes devem estar em conformidade a um conjunto de **regras padrão** para operar nesse ambiente, e há um conjunto de **serviços de infraestrutura** (transações, segurança, concorrência…) dos quais o componente de aplicação pode depender."
+## Exemplo do dia a dia
 
-## 🍔 Comparação com o mundo real — um shopping center
+Um shopping. O shopping (ambiente) dá energia, segurança, estacionamento e limpeza. A loja (componente) não gera a própria energia nem contrata segurança; usa o do shopping e segue as regras dele. Assim a loja foca em vender.
 
-O **shopping** é o ambiente; as **lojas** são os componentes:
+## Declarativo x na mão
 
-- O shopping fornece a **infraestrutura**: energia, segurança, estacionamento, limpeza, ar-condicionado.
-- A loja **não gera a própria energia** nem contrata seu próprio segurança — ela **depende** dos serviços do shopping.
-- Mas, para entrar, a loja precisa **seguir as regras do shopping** (horário, padrão de fachada, contrato).
+O material prefere ambientes que entregam a infraestrutura de forma **declarativa** (você só marca "isto precisa de transação e login" e o framework resolve), em vez de **na mão** (você escreve abrir transação, checar permissão etc. no meio da lógica). O declarativo deixa a lógica limpa. Ver [[Programação Declarativa]].
 
-Trocando em miúdos: a loja foca em **vender** (a regra de negócio dela) e deixa a **infraestrutura** com o shopping. É exatamente isso que um ambiente de componentes faz. Ver [[Serviços de Infraestrutura]].
+## No código
 
-## ⚙️ Declarativo (via framework) vs. explícito (na mão)
-
-O material foca nos ambientes que entregam a infraestrutura de forma **declarativa**, usando **framework** — também chamada de **"programação baseada em atributo"** — em vez de você chamar tudo na mão dentro da lógica.
-
-> [!important] A diferença na prática
-> - **Explícito (imperativo):** você escreve, dentro da regra de negócio, "abrir transação… se der erro, desfazer… checar permissão…". A lógica fica **suja**, misturada com infraestrutura.
-> - **Declarativo (por atributo):** você só **marca/anota** "isto precisa de transação" e "isto exige login", e o **framework cuida do resto**. A lógica fica **limpa**.
->
-> O material prefere o declarativo porque dá uma **base mais sólida** para aplicações distribuídas em escala empresarial. Ver [[Programação Declarativa]].
-
-## 🗂️ As opções citadas
-
-> [!info] Sem julgamento de "qual é melhor"
-> O material **não** compara qual é superior — só apresenta os conceitos. Aqui vai só o mapa:
-
-| Ambiente | Dependência de Plataforma | Dependência de Linguagem |
-|----------|---------------------------|--------------------------|
-| **Microsoft COM+** | Windows | Nenhuma |
-| **Enterprise JavaBeans (EJB)** | Nenhuma | Java |
-
-- **COM+** → preso ao **Windows**, mas aceita várias linguagens.
-- **EJB** → roda em **qualquer plataforma** (graças à JVM), mas é preso ao **Java**.
-
-## 🧠 Comparação com a Clean Architecture
-
-> [!info] Conexão com [[Clean Architecture]]
-> Os dois pensamentos **se alinham na intenção**, mas atuam em **lugares diferentes**:
->
-> - **Clean Architecture** diz: mantenha a **regra de negócio limpa**, sem detalhes de infraestrutura grudados nela.
-> - O **ambiente de componentes declarativo** é uma **ferramenta** que ajuda nisso: ao deixar transação/segurança como **anotações** tratadas pelo framework, a infraestrutura sai de dentro da lógica → o núcleo fica mais limpo.
->
-> **A diferença/cuidado:** se você espalhar atributos do framework por toda a regra de negócio, ela passa a **depender do framework** — o oposto do que a Clean Architecture quer (núcleo independente de detalhes). O ideal é usar o declarativo **na borda**, não no coração do domínio.
-
-## 💻 Exemplo em React + TypeScript
-
-React é **declarativo** por natureza — ótimo para sentir a diferença. Em vez de mandar "passos" na mão, você **declara** o que quer e o framework executa:
-
-```tsx
-// ❌ Imperativo (na mão): você comanda cada passo da infraestrutura da UI
-const el = document.createElement("button");
-el.textContent = "Pagar";
-el.addEventListener("click", pagar);
-document.body.appendChild(el);
-
-// ✅ Declarativo: você DECLARA o que quer; o React cuida de criar/atualizar/remover
-function BotaoPagar() {
-  return <button onClick={pagar}>Pagar</button>;
-}
-```
-
-E a "programação baseada em atributo" do material lembra um **decorator** (anotação) que injeta infraestrutura sem sujar a lógica:
+Na prática, "marcar" o que precisa em vez de escrever passo a passo:
 
 ```ts
-// pseudo-decorator: "marque" que este caso de uso precisa de transação + auth.
-// O framework lê o atributo e cuida disso — a lógica não chama nada de infra.
+// declarativo: anota a necessidade; o ambiente cuida de transação e login
 @Transacional()
 @RequerLogin()
 class ConfirmarPedido {
   executar(pedidoId: string) {
-    // só REGRA DE NEGÓCIO aqui — nada de "abrir transação" ou "checar token"
-    return this.repo.confirmar(pedidoId);
+    return this.repo.confirmar(pedidoId); // só a regra de negócio
   }
 }
 ```
 
-> [!note] A sacada
-> No declarativo você diz **o quê** (precisa de transação/login) e o ambiente resolve o **como**. É o mesmo espírito de [[Abstração|abstração]]: esconder o detalhe e focar no essencial.
+## As opções citadas (sem dizer qual é melhor)
 
-## 🔗 Relacionados
+| Ambiente | Preso à plataforma | Preso à linguagem |
+|----------|--------------------|--------------------|
+| Microsoft COM+ | Windows | nenhuma |
+| Enterprise JavaBeans (EJB) | nenhuma | Java |
+
+## Hoje em dia
+
+COM+ e EJB são antigos. A ideia de "ambiente que entrega infraestrutura pronta" vive hoje em: **servidores de aplicação** modernos (Spring), **plataformas de nuvem** (AWS, Azure), **Kubernetes** e o **serverless** (AWS Lambda). Em todos, você escreve a regra de negócio e a plataforma cuida de escalar, segurança e disponibilidade.
+
+## Comparação com Clean Architecture
+
+O ambiente declarativo ajuda a manter a regra de negócio limpa (a infra vira anotação na borda). Cuidado: se espalhar anotações de um framework pelo coração do domínio, o núcleo passa a depender do framework — o contrário do que a Clean Architecture quer. Use o declarativo na borda. Ver [[Clean Architecture]].
+
+## Relacionados
 
 - [[Containers]]
 - [[Serviços de Infraestrutura]]
 - [[Programação Declarativa]]
 - [[Distribuição de Componentes]]
-- [[Middleware]]
 - [[Clean Architecture]]
-- [[Abstração]]
 
 ---
 *Estudo iniciado em 2026-06-01*

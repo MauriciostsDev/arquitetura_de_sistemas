@@ -10,84 +10,56 @@ status: em-estudo
 
 # CIDL (Component Implementation Definition Language)
 
-> [!summary] Em uma frase
-> A **CIDL** é uma **linguagem declarativa** do [[Framework CCM (CORBA Component Model)|CCM]] usada para **descrever** a implementação e a **persistência de estado** dos componentes e seus *homes* — você diz **como o componente deve se comportar**, e o [[CIF]] gera o código repetitivo a partir disso.
+> [!summary] Resumo
+> CIDL é a linguagem do [[Framework CCM (CORBA Component Model)|CCM]] onde você descreve como o componente se comporta e guarda estado. A partir dela, o [[CIF]] gera o código repetitivo.
 
-## 🎯 A ideia, bem simples
+## O que é
 
-Em vez de escrever na mão todo o "esqueleto" de um componente (como ele ativa, navega, guarda estado), você **declara** essas características num arquivo CIDL. É um **formulário de configuração**: você preenche o que o componente é, e a ferramenta gera o resto. Puro espírito de [[Programação Declarativa]].
+Em vez de escrever na mão o esqueleto do componente (como ele liga, navega, guarda estado), você **descreve** isso num arquivo CIDL. É um formulário: você preenche o que o componente é, e a ferramenta gera o resto. É [[Programação Declarativa|declarativo]].
 
-## 🗂️ As 4 categorias de componente (a tabela reconstruída)
+## As 4 categorias (por como lidam com estado)
 
-O arquivo CIDL especifica em qual **categoria** o componente se encaixa. Cada categoria define como o componente lida com **estado** e **persistência**:
+| Categoria | Estado | Exemplo no dia a dia |
+|-----------|--------|----------------------|
+| Service | sem memória (stateless) | calculadora de frete: manda CEP, recebe valor, esquece |
+| Session | lembra durante a conversa | carrinho enquanto você escolhe (some no fim) |
+| Process | durável, mas sem identidade pública | pedido sendo processado (cobrar, separar, despachar) |
+| Entity | durável e com chave (identidade) | Pedido nº 123 salvo no banco, dá pra buscar depois |
 
-| Categoria | CORBA usage model | Tipo de API do container | Interface base chaveada | Exemplo |
-|-----------|-------------------|--------------------------|-------------------------|---------|
-| **Service** | Stateless | Session | Não | Componentes do sistema |
-| **Session** | Conversational | Session | Não | Interfaces de interação |
-| **Process** | Durável (Durable) | Entity | Não | Regras de negócio |
-| **Entity** | Durável (Durable) | Entity | **Sim** | Objetos de negócio |
+## No código
 
-> [!note] Lendo a tabela do jeito simples
-> - **Service** = **sem memória**. Cada chamada é independente (como uma calculadora: não lembra a conta anterior).
-> - **Session** = **lembra durante a conversa**. Guarda estado enquanto você interage, mas some no fim (como um carrinho de compras antes de finalizar).
-> - **Process** = **durável**, mas sem identidade pública. Estado persistido; representa um **processo de negócio**.
-> - **Entity** = **durável e com chave** (identidade). É um **objeto de negócio** que existe no banco e pode ser encontrado pela chave (ex.: o Pedido nº 123).
-
-## 🍔 Comparação com o mundo real — pedido no iFood
-
-- **Service** → a **calculadora de frete**: você manda o CEP, ela devolve o valor e esquece tudo.
-- **Session** → o **carrinho** enquanto você escolhe: lembra os itens durante a navegação.
-- **Process** → o **fluxo do pedido** sendo processado (cobrar → separar → despachar): tem estado que dura, mas é um processo.
-- **Entity** → o **Pedido nº 123** salvo no banco: tem identidade, dá pra buscar depois.
-
-## 🧠 Comparação com a Clean Architecture
-
-> [!info] Conexão com [[Clean Architecture]]
-> A divisão por **estado/persistência** lembra a separação de camadas da Clean Architecture:
-> - **Entity (CCM)** ≈ as **Entidades** da Clean Architecture: objetos de negócio com identidade e estado durável.
-> - **Service/Session** ≈ comportamentos mais próximos dos **casos de uso** e da interação.
->
-> **Cuidado (não é igual):** a "Entity" do CCM é uma categoria **técnica de container** (ligada a persistência/chave), enquanto a "Entity" da Clean Architecture é uma **regra de negócio pura, sem saber de banco**. O nome coincide, o propósito não é idêntico. A CIDL, sendo **declarativa**, ajuda a manter esses detalhes de persistência **fora** da lógica — o que combina com a Clean Architecture.
-
-## 💻 Exemplo em React + TypeScript
-
-As categorias do CCM mapeiam quase 1:1 com **como você lida com estado no React**:
+As categorias batem quase 1:1 com como você lida com estado no React:
 
 ```tsx
-// SERVICE (stateless): componente puro, sem memória entre chamadas
+// Service (sem estado): componente puro
 const Frete = ({ cep }: { cep: string }) => <span>Frete para {cep}</span>;
 
-// SESSION (conversational): estado que vive durante a sessão (some no refresh)
+// Session (estado temporário): some no refresh
 function Carrinho() {
-  const [itens, setItens] = useState<string[]>([]); // memória temporária
+  const [itens, setItens] = useState<string[]>([]);
   return <button onClick={() => setItens([...itens, "Pizza"])}>Add ({itens.length})</button>;
 }
 
-// ENTITY (durável + chave): estado persistido, identificado por id
+// Entity (estado salvo, com id): existe no banco
 async function salvarPedido(pedido: { id: string; itens: string[] }) {
   await fetch(`/api/pedidos/${pedido.id}`, { method: "PUT", body: JSON.stringify(pedido) });
-  // existe no banco, tem identidade (id) e pode ser buscado depois
 }
 ```
 
-E a própria CIDL, por ser **declarativa**, lembra um descritor/decorator que diz "este componente é durável e tem chave":
+## Hoje em dia
 
-```ts
-// espírito da CIDL: você DECLARA a categoria, a ferramenta gera o esqueleto
-@Componente({ categoria: "Entity", durable: true, keyed: true })
-class Pedido {
-  constructor(public id: string, public itens: string[]) {}
-}
-```
+A linguagem CIDL em si é legado (foi com o CCM). Mas a ideia de **descrever o componente num arquivo e deixar a ferramenta gerar o código** está em todo lugar hoje: **decorators** (NestJS, TypeORM), **anotações** do Spring, arquivos **YAML** do Kubernetes, **schema** do Prisma. Você declara, a ferramenta gera. Mesmo espírito.
 
-## 🔗 Relacionados
+## Comparação com Clean Architecture
+
+Atenção a uma pegadinha: a **"Entity" do CCM** é categoria técnica (ligada a banco/chave), enquanto a **"Entidade" da Clean Architecture** é regra de negócio pura, sem saber de banco. Mesmo nome, propósito diferente. Ver [[Clean Architecture]].
+
+## Relacionados
 
 - [[CIF]]
 - [[Framework CCM (CORBA Component Model)]]
 - [[Programação Declarativa]]
 - [[Clean Architecture]]
-- [[Implementação de Componentes]]
 
 ---
 *Estudo iniciado em 2026-06-01*

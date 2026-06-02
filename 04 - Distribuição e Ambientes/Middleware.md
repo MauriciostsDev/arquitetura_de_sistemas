@@ -9,50 +9,54 @@ status: em-estudo
 
 # Middleware
 
-> [!summary] Em uma frase
-> **Middleware** é a camada de software que fica **no meio** (*middle*) e conecta componentes que estão em camadas ou máquinas diferentes, cuidando da "conversa" entre eles.
+> [!summary] Resumo
+> Middleware é o software que fica no meio e conecta componentes que estão em máquinas ou lugares diferentes.
 
-## 🎯 O que é
+## O que é
 
-Quando um sistema é distribuído ([[Distribuição de Componentes]]), seus componentes não rodam no mesmo lugar: uns ficam no celular, outros em servidores diferentes, às vezes em datacenters diferentes. O middleware é quem permite que eles se chamem **como se estivessem juntos**, escondendo:
+Num sistema distribuído, os componentes não rodam juntos: um no celular, outros em servidores diferentes. O middleware deixa eles se chamarem como se estivessem lado a lado, escondendo onde o outro está, como transportar a mensagem, em que formato os dados vão e regras como segurança e transação.
 
-- **onde** o outro componente está (localização),
-- **como** transportar a mensagem (rede, protocolo),
-- **em que formato** os dados precisam estar (tradução/serialização),
-- **regras transversais**: segurança, transações, controle de erro.
+## Exemplo do dia a dia
 
-## 🍔 Analogia do dia a dia — o garçom / o app do iFood
+No app de delivery, você não fala direto com a cozinha. Existe um intermediário que pega seu pedido, traduz para o formato do restaurante, confere o pagamento e devolve a confirmação. Esse intermediário é o middleware.
 
-Quando você pede comida no iFood, **você não fala direto com a cozinha do restaurante**. Existe um intermediário que:
+## O que ele faz na prática
 
-- pega o seu pedido,
-- traduz para o formato que o restaurante entende,
-- confere se o pagamento foi autorizado antes de mandar pra cozinha,
-- e devolve a confirmação pra você.
+| Função | Para que serve |
+|--------|----------------|
+| Comunicação | levar a mensagem de um componente a outro |
+| Tradução | converter formatos (ex.: JSON do app para o formato do restaurante) |
+| Segurança | só quem está logado pode chamar |
+| Transação | se a cobrança falha, o pedido não segue |
+| Localização | achar o servidor certo, onde quer que esteja |
 
-Esse intermediário é o **middleware**. Você (componente "app do cliente") e a cozinha (componente "restaurante") nunca se conectam diretamente — sempre por meio dele, seguindo as regras dele.
+## No código
 
-## 🧩 O que o middleware faz na prática
+Hoje o middleware mais comum é um cliente de API que esconde a rede de quem usa:
 
-| Função | Para que serve | Exemplo |
-|--------|----------------|---------|
-| **Comunicação** | levar a mensagem de um componente a outro | app → servidor de pedidos |
-| **Tradução** | converter formatos entre componentes | JSON do app → formato interno do restaurante |
-| **Segurança** | autenticar e autorizar chamadas | só o app logado pode cobrar |
-| **Transações** | garantir que tudo aconteça ou nada aconteça | se a cobrança falha, o pedido não é enviado |
-| **Localização** | achar o componente certo onde quer que ele esteja | encontrar o servidor de pagamentos disponível |
+```ts
+// quem usa só chama "buscarPedidos"; a rede, o formato e a URL ficam escondidos
+class ApiCliente {
+  async buscarPedidos(userId: string) {
+    const res = await fetch(`https://api.delivery.com/pedidos?user=${userId}`);
+    return res.json(); // traduz a resposta para objeto
+  }
+}
+```
 
-## 🔌 Tipos comuns (para aprofundar depois)
+## Hoje em dia
 
-- **Message brokers / filas** (ex.: RabbitMQ, Kafka) — componentes trocam mensagens sem falar direto.
-- **Servidores de aplicação** (ex.: contêineres Java EE) — hospedam componentes e aplicam as políticas dos descritores.
-- **APIs / gateways** — porta de entrada que roteia chamadas para os serviços certos.
+"Middleware" continua super atual, com outras roupagens: **API Gateway** (porta de entrada que roteia chamadas), **filas de mensagens** como RabbitMQ e Kafka (componentes trocam mensagens sem falar direto) e **service mesh**. O conceito é o mesmo: algo no meio cuidando da conversa entre serviços.
 
-## 🔗 Relacionados
+## Comparação com Clean Architecture
+
+O middleware é detalhe de infraestrutura (borda). A regra de negócio não deveria saber se a chamada vai por REST, fila ou outra coisa — isso fica escondido atrás de uma interface. Ver [[Clean Architecture]].
+
+## Relacionados
 
 - [[Distribuição de Componentes]]
-- [[Empacotamento de Componentes]]
 - [[Acoplamento e Coesão]]
+- [[Clean Architecture]]
 
 ---
 *Estudo iniciado em 2026-06-01*

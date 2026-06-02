@@ -9,46 +9,64 @@ status: em-estudo
 
 # Acoplamento e Coesão
 
-> [!summary] Em uma frase
-> **Coesão** é o quanto as coisas *dentro* de um componente combinam entre si (queremos **alta**); **acoplamento** é o quanto um componente *depende* dos outros (queremos **baixo**).
+> [!summary] Resumo
+> Coesão: o quanto as partes de dentro de um componente combinam (queremos alta). Acoplamento: o quanto um componente depende dos outros (queremos baixo).
 
-## 🧲 Acoplamento — dependência entre componentes
+## O que é
 
-Acoplamento mede **o quanto um componente precisa de outro para funcionar**. Quanto mais um depende dos detalhes internos do outro, **mais forte (e pior)** é o acoplamento.
+- **Acoplamento** = dependência entre componentes. Quanto mais um precisa saber dos detalhes do outro, pior.
+- **Coesão** = foco interno. Um componente bom faz uma coisa só, bem feita.
 
-> [!important] Objetivo: baixo acoplamento (loose coupling)
-> Componentes pouco acoplados podem ser **trocados, testados e mantidos isoladamente**. Se o iFood troca o provedor de pagamento, o **catálogo** de restaurantes não deveria nem perceber.
+A meta de quase todo bom projeto: **alta coesão e baixo acoplamento**.
 
-> [!analogy] Analogia do dia a dia
-> **Forte acoplamento** é como um móvel onde tudo é colado e parafusado junto: pra trocar uma gaveta, você desmonta o armário inteiro.
-> **Baixo acoplamento** é como peças de Lego: encaixam por um padrão (a interface) e você troca uma peça sem mexer nas outras.
+## Exemplo do dia a dia
 
-## 🧩 Coesão — foco interno do componente
+- **Baixo acoplamento** é como peças de Lego: encaixam por um padrão e você troca uma sem desmontar o resto. Se o app de delivery troca o provedor de pagamento, o catálogo de restaurantes nem percebe.
+- **Forte acoplamento** é um móvel todo colado: pra trocar uma gaveta, desmonta tudo.
+- **Alta coesão**: uma caixa só de parafusadeira. **Baixa coesão**: uma gaveta com chave, talher, pilha e remédio juntos.
 
-Coesão mede **o quanto as partes de um componente pertencem umas às outras**. Um componente coeso faz **uma coisa bem feita**.
+## No código
 
-> [!important] Objetivo: alta coesão
-> O pacote "Pagamentos" só cuida de pagamento. Se ele também mexesse com cardápio e com rota de entrega, teria **baixa coesão** — viraria uma "gaveta de bagunça".
+Acoplamento alto (ruim) — a tela conhece a Stripe direto:
 
-> [!analogy] Analogia do dia a dia
-> **Alta coesão** = uma caixa de ferramentas só de parafusadeira (tudo ali serve ao mesmo propósito).
-> **Baixa coesão** = uma gaveta com chave, talher, pilha e remédio juntos — difícil de achar e de manter.
+```ts
+class Tela {
+  pagar() {
+    const stripe = new Stripe("chave"); // preso à Stripe
+    stripe.charge(50);
+  }
+}
+```
 
-## 🎯 A regra de ouro
+Acoplamento baixo (bom) — a tela depende de uma interface, não de quem implementa:
 
-> [!tip] Alta coesão + baixo acoplamento
-> Esse é o objetivo de quase todo bom design de componentes. As **interfaces** ([[Interfaces e Contratos]]) e o **middleware** ([[Middleware]]) são as principais ferramentas para conseguir isso: cada componente é coeso por dentro e se conecta aos outros só pelo contrato, sem depender dos detalhes.
+```ts
+interface Pagamento {
+  cobrar(valor: number): Promise<boolean>;
+}
 
-## ⚠️ Sobre o termo "forte acoplagem" do material
+class Tela {
+  constructor(private pagamento: Pagamento) {} // recebe de fora
+  pagar() {
+    return this.pagamento.cobrar(50); // troca o provedor sem mexer aqui
+  }
+}
+```
 
-O material de [[Distribuição de Componentes]] fala em "forte acoplagem para a organização". O sentido provável é **integração forte** (tudo bem conectado e confiável), e não dependência rígida entre componentes. Na dúvida, confirme com o professor — pode ser pegadinha de prova.
+## Comparação com Clean Architecture
 
-## 🔗 Relacionados
+É a mesma ideia: depender de interfaces (abstrações) e não de implementações. Isso é o que mantém o núcleo do sistema solto e fácil de mudar. Ver [[Clean Architecture]].
 
+## Sobre o termo "forte acoplagem" do material
+
+O material de [[Distribuição de Componentes]] fala em "forte acoplagem para a organização". O sentido provável é **integração forte** (tudo conectado e confiável), não dependência rígida entre componentes. Na dúvida, confirme com o professor.
+
+## Relacionados
+
+- [[Interfaces e Contratos]]
 - [[Empacotamento de Componentes]]
 - [[Distribuição de Componentes]]
-- [[Interfaces e Contratos]]
-- [[Middleware]]
+- [[Clean Architecture]]
 
 ---
 *Estudo iniciado em 2026-06-01*

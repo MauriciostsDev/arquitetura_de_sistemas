@@ -9,60 +9,47 @@ status: revisar-com-professor
 
 # Congeneridade
 
-> [!warning] Atenção: termo não-padronizado
-> **Congeneridade** não é um termo consagrado na literatura clássica de arquitetura de software (Bass, Fowler, Sommerville etc.). Ele aparece em alguns materiais de curso brasileiros. A definição abaixo é construída a partir da **etimologia** e do contexto — **confirme o sentido exato com seu professor/material.**
+> [!summary] Resumo
+> Congeneridade é os componentes serem compatíveis entre si: do mesmo padrão, falando a mesma língua, para encaixarem no projeto.
 
-> [!summary] Em uma frase
-> **Congeneridade** é a qualidade de os componentes serem **congêneres** — isto é, **compatíveis, conformes a um mesmo padrão e da mesma "espécie"** — de modo que se encaixem corretamente no projeto como um todo.
+> [!warning] Termo de material de curso
+> "Congeneridade" não aparece nos livros clássicos de arquitetura (Bass, Fowler, Sommerville). É termo de alguns materiais brasileiros. A leitura abaixo vem da raiz da palavra; confirme com seu professor.
 
-## 🧬 Etimologia (a chave do conceito)
+## O que é
 
-- **Congênere** = "do mesmo gênero / da mesma natureza".
-- **Congeneridade** = a propriedade/estado de ser congênere → **compatibilidade e conformidade** entre componentes.
+Vem de "congênere" = do mesmo gênero. Então congeneridade é a ideia de componentes **compatíveis e conformes a um mesmo padrão**. O foco é compatibilidade, não "controle de mudanças". Verificar mudanças é só uma forma de **manter** essa compatibilidade.
 
-Ou seja, o **centro** do termo é **compatibilidade**, não "controle de mudanças".
+## Exemplo do dia a dia
 
-## ✏️ Ajustando uma definição comum
+Peças de Lego só encaixam porque seguem o mesmo padrão de medida. Uma peça fora do padrão não encaixa, por melhor que seja. No app de delivery: o app, o servidor de pagamento e o do restaurante precisam falar o mesmo formato. Manter todos nesse padrão, mesmo quando um muda, é manter a congeneridade.
 
-> [!example] Análise inicial (a corrigir)
-> *"Congeneridade é a verificação de mudanças entre vários componentes para que no final eles se adequem ao projeto."*
+## No código
 
-O que está certo e o que ajustar:
+Componentes "congêneres" quando seguem a mesma interface combinada:
 
-| Parte da frase | Avaliação |
-|----------------|-----------|
-| "...para que se adequem ao projeto" | ✅ correto — é o **objetivo** |
-| "verificação de mudanças" | ⚠️ é um **meio**, não a essência |
-| núcleo do conceito | ❌ não é "controle de mudanças" e sim **compatibilidade / conformidade** |
+```ts
+// padrão único que todos seguem
+interface Servico {
+  versaoApi: "v1";
+  responder(dado: string): string;
+}
 
-> [!important] Correção
-> A verificação de mudanças é uma **ferramenta** para *manter* a congeneridade. A congeneridade em si é a **propriedade** de os componentes permanecerem compatíveis entre si e com os padrões do projeto.
+const pagamento: Servico = { versaoApi: "v1", responder: (d) => d };
+const entrega: Servico = { versaoApi: "v1", responder: (d) => d };
+// ambos no mesmo padrão -> encaixam. Se um virar "v2" sem combinar, quebra.
+```
 
-## 🍔 Analogia do dia a dia — peças que encaixam
+## Como se liga ao resto
 
-Pensa em montar um móvel ou peças de Lego: as peças só se encaixam porque seguem o **mesmo padrão de medida e conexão** — elas são "congêneres". Se alguém fabrica uma peça fora do padrão, ela não encaixa, por mais bem-feita que seja.
+- Depende de [[Interfaces e Contratos]] estáveis (o padrão comum).
+- Anda junto com [[Acoplamento e Coesão|baixo acoplamento]].
+- É conferida no [[Controle da Qualidade]].
 
-No iFood: o app, o servidor de pagamentos e o servidor do restaurante precisam falar o **mesmo "idioma"** (mesmos formatos, mesmas [[Interfaces e Contratos|interfaces]], mesmos padrões da organização). Manter todos nesse mesmo padrão — mesmo quando um deles muda — é manter a **congeneridade**.
-
-## 🔗 Como se liga ao resto
-
-- Depende de **[[Interfaces e Contratos|interfaces/contratos]]** estáveis: é o contrato comum que torna os componentes compatíveis.
-- Anda junto com **[[Acoplamento e Coesão|baixo acoplamento]]**: componentes congêneres se integram sem dependência rígida.
-- É verificada na **[[Controle da Qualidade|qualidade]]**: conferir se um componente alterado continua conforme ao padrão do projeto.
-- Sustenta a **[[Distribuição de Componentes|distribuição]]**: só componentes congêneres seguem as mesmas políticas de container/middleware.
-
-## ❓ Para confirmar com o professor
-
-- Congeneridade = **compatibilidade/conformidade** entre componentes (leitura aqui), ou o material usa no sentido de **gestão/verificação de mudanças** (configuration/change management)?
-- Os dois sentidos se tocam, mas a prova pode cobrar um deles especificamente.
-
-## 🔗 Relacionados
+## Relacionados
 
 - [[Interfaces e Contratos]]
 - [[Acoplamento e Coesão]]
 - [[Controle da Qualidade]]
-- [[Distribuição de Componentes]]
-- [[Implementação de Componentes]]
 
 ---
 *Estudo iniciado em 2026-06-01*

@@ -9,35 +9,29 @@ status: em-estudo
 
 # Programação Orientada a Aspectos
 
-> [!summary] Em uma frase
-> **Programação Orientada a Aspectos (AOP)** separa as "preocupações transversais" (segurança, transação, log) da regra de negócio, aplicando-as **por fora**, sem espalhar esse código por todo lugar.
+> [!summary] Resumo
+> AOP separa coisas que aparecem em todo lugar (segurança, log, transação) da regra de negócio, aplicando-as por fora.
 
-## 🎯 A ideia, bem simples
+## O que é
 
-Tem coisas que aparecem em **todo lugar** do sistema: verificar login, registrar log, abrir transação. Se você escrever isso dentro de cada função, vira **repetição e bagunça**. A AOP junta cada uma dessas preocupações num **"aspecto"** e o aplica automaticamente onde for preciso — a regra de negócio fica limpa.
+Tem código que se repete por todo o sistema: checar login, registrar log, abrir transação. Se você espalha isso dentro de cada função, vira bagunça. A AOP junta cada uma dessas preocupações num "aspecto" e aplica automaticamente onde precisa. A regra de negócio fica limpa.
 
-> [!note] Termo-chave: cross-cutting concern
-> É uma preocupação que **"corta atravessado"** várias partes do sistema (ex.: segurança aparece no pagamento, no cadastro, na entrega…). A AOP centraliza isso num só lugar. No CCM, é assim que o [[Containers|container]] encaminha requisições e aplica serviços sem o componente saber.
+> [!note] Termo: cross-cutting concern (preocupação transversal)
+> É algo que "corta atravessado" o sistema (segurança aparece no pagamento, no cadastro, na entrega). A AOP centraliza isso num lugar só.
 
-## 🍔 Comparação com o mundo real — sistema de incêndio do prédio
+## Exemplo do dia a dia
 
-Os **sprinklers e alarmes** de um prédio passam por **todos os andares**, mas nenhum morador instala o seu. É um sistema **transversal**, gerenciado de forma central, que protege todo mundo sem cada apartamento se preocupar. Um aspecto (segurança, log) é esse "sistema de incêndio" do software.
+O sistema de incêndio do prédio: sprinklers e alarmes passam por todos os andares, mas nenhum morador instala o seu. É transversal e gerenciado num lugar só. Um aspecto (segurança, log) é esse "sistema de incêndio" do software.
 
-## 🧠 Comparação com a Clean Architecture
+## No código
 
-> [!info] Conexão com [[Clean Architecture]]
-> AOP é uma **ferramenta** para alcançar o objetivo da Clean Architecture: manter a regra de negócio **livre de detalhes**. Em vez de a lógica chamar "checarSegurança()", o aspecto faz isso na **borda**.
-> **Cuidado:** os aspectos costumam vir de um framework — mantenha-os na periferia, para o núcleo não depender do framework de AOP.
-
-## 💻 Exemplo em React + TypeScript
-
-Um HOC (ou middleware) é o "aspecto": embrulha o componente e injeta o comportamento transversal.
+Um "embrulho" que adiciona log por fora, sem o componente ter código de log:
 
 ```tsx
-// ASPECTO de logging aplicado por fora — o componente não tem código de log
+// aspecto de log aplicado por fora
 function comLog<P extends object>(Componente: React.ComponentType<P>, nome: string) {
   return (props: P) => {
-    console.log(`[render] ${nome}`); // preocupação transversal, centralizada
+    console.log(`[render] ${nome}`); // preocupação transversal, num lugar só
     return <Componente {...props} />;
   };
 }
@@ -45,18 +39,20 @@ function comLog<P extends object>(Componente: React.ComponentType<P>, nome: stri
 const Carrinho = comLog(CarrinhoBase, "Carrinho");
 ```
 
-## ✅ Por que importa
+## Hoje em dia
 
-- **Regra de negócio limpa** (sem código repetido de infra no meio).
-- **Manutenção fácil**: muda a regra de segurança/log em **um lugar só**.
-- Base de como [[Containers|containers]] aplicam serviços automaticamente.
+A palavra "AOP" caiu de moda, mas a ideia está em tudo: **middlewares** do Express, **interceptors** do Axios/Angular, **decorators** do NestJS, **Higher-Order Components** e o `withAuth` do dia a dia. Todos aplicam comportamento transversal por fora.
 
-## 🔗 Relacionados
+## Comparação com Clean Architecture
+
+AOP ajuda a manter a regra de negócio livre de detalhes: em vez de a lógica chamar "checarSegurança()", o aspecto faz isso na borda. Cuidado para não prender o núcleo ao framework de aspectos. Ver [[Clean Architecture]].
+
+## Relacionados
 
 - [[Containers]]
 - [[Programação Declarativa]]
-- [[Clean Architecture]]
 - [[Abstração]]
+- [[Clean Architecture]]
 
 ---
 *Estudo iniciado em 2026-06-01*

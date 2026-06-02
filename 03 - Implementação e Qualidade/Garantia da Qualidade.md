@@ -9,31 +9,42 @@ status: em-estudo
 
 # Garantia da Qualidade
 
-> [!summary] Em uma frase
-> **Garantia da Qualidade (QA)** cuida do **processo**: define a metodologia que **previne** defeitos *enquanto* o componente é construído.
+> [!summary] Resumo
+> Garantia da Qualidade (QA) cuida do processo: define o jeito de trabalhar que evita o erro antes dele acontecer.
 
-## 🎯 O que é
+## O que é
 
-A Garantia da Qualidade (no diagrama, "Metodologia / Garantia da Qualidade") é **focada no processo**, não no produto final. Ela responde: *"estamos construindo do jeito certo?"*. Define padrões, práticas e fluxos que tornam o defeito **improvável** desde o começo — por exemplo: revisões de código, padrões de codificação, testes automatizados, definição de "pronto".
+QA olha para o **processo**, não para o produto pronto. A pergunta é "estamos construindo do jeito certo?". Na prática: revisão de código, padrões de escrita, testes automáticos, definição do que é "pronto". Tudo para o erro ser raro desde o começo.
 
-> [!important] QA ≠ QC
-> **Garantia (QA)** é **preventiva** e olha o **processo** (como fazer).
-> **[[Controle da Qualidade|Controle (QC)]]** é **detectivo** e olha o **produto** (verificar o que ficou pronto).
+A diferença que cai em prova: **QA é preventiva (processo); [[Controle da Qualidade|QC]] é corretiva (produto pronto)**.
 
-## 🍔 Analogia do dia a dia — as regras da cozinha
+## Exemplo do dia a dia
 
-São as **normas de higiene e o passo a passo padrão** da cozinha: lavar as mãos, conferir validade, seguir a ordem de preparo. Essas regras existem para que o prato saia certo **na origem**, antes de qualquer prova final. Isso é garantia da qualidade.
+As regras de higiene e o passo a passo da cozinha: lavar as mãos, conferir validade, seguir a ordem. Existem para o prato sair certo na origem, antes de qualquer prova.
 
-## ✅ Por que importa
+## No código
 
-- Reduz defeitos **na fonte**, em vez de só pescá-los no fim.
-- Cria **consistência**: todos os componentes seguem o mesmo padrão.
-- Diminui custo: erro prevenido é mais barato que erro corrigido depois.
+QA aparece como automações que rodam durante o trabalho. Exemplo de um teste que faz parte do processo:
 
-## 🔗 Relacionados
+```ts
+import { aplicarDesconto } from "./desconto";
 
-- [[Implementação de Componentes]]
+test("desconto de 10% em 100 vira 90", () => {
+  expect(aplicarDesconto(100, 0.1)).toBe(90);
+});
+// rodar testes a cada commit é uma prática de garantia da qualidade
+```
+
+## Por que importa
+
+- Evita o erro na fonte, em vez de caçar depois.
+- Deixa tudo consistente (mesmo padrão).
+- Sai mais barato: prevenir custa menos que corrigir.
+
+## Relacionados
+
 - [[Controle da Qualidade]]
+- [[Implementação de Componentes]]
 - [[Especificação de Componentes]]
 
 ---

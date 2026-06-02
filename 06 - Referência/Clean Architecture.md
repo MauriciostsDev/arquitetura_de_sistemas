@@ -9,93 +9,76 @@ status: em-estudo
 
 # Clean Architecture
 
-> [!summary] Em uma frase
-> **Clean Architecture** (de Robert C. Martin, o "Uncle Bob") é um jeito de organizar o código em **camadas**, mantendo a **regra de negócio no centro** e os **detalhes** (banco, framework, telas, APIs) na **borda** — com as dependências sempre apontando **para dentro**.
+> [!summary] Resumo
+> Jeito de organizar o código em camadas: a regra de negócio no centro e os detalhes (banco, framework, tela, API) na borda. As dependências sempre apontam para dentro.
 
-> [!note] Por que esta nota existe
-> No vault, **sempre** comparamos os conceitos de arquitetura com a Clean Architecture. Esta é a nota de referência para esses links.
+> [!note] Para que serve esta nota
+> No vault a gente sempre compara os conceitos com a Clean Architecture. Esta é a nota de referência desses links.
 
-## 🎯 A ideia, bem simples
+## O que é
 
-O coração do seu sistema (as **regras do negócio**) não deveria depender de **detalhes que mudam**: qual banco de dados, qual framework, qual tela, qual API externa. Esses detalhes devem ser **plugáveis** — trocáveis sem afetar o núcleo.
+O coração do sistema (as regras do negócio) não deveria depender de coisas que mudam: qual banco, qual framework, qual tela. Esses detalhes ficam na borda e devem ser trocáveis sem afetar o centro.
 
-A regra principal é **A Regra da Dependência**: as setas de dependência apontam **de fora para dentro**. O núcleo não conhece o mundo externo; o mundo externo é que conhece o núcleo.
+A regra principal (Regra da Dependência): as setas apontam de fora para dentro. O núcleo não conhece a borda; a borda é que conhece o núcleo.
 
-```
-   ┌─────────────────────────────────────────────┐
-   │  Frameworks & Drivers (UI, DB, Web, APIs)    │  ← detalhes, borda
-   │   ┌───────────────────────────────────────┐  │
-   │   │  Adaptadores (controllers, gateways)   │  │
-   │   │   ┌─────────────────────────────────┐  │  │
-   │   │   │  Casos de Uso (regras do app)    │ │  │
-   │   │   │   ┌───────────────────────────┐  │ │  │
-   │   │   │   │  Entidades (regras puras)  │ │ │  │
-   │   │   │   └───────────────────────────┘  │ │  │
-   │   │   └─────────────────────────────────┘  │  │
-   │   └───────────────────────────────────────┘  │
-   └─────────────────────────────────────────────┘
-        dependências apontam SEMPRE para dentro →
-```
+## Exemplo do dia a dia
 
-## 🍔 Comparação com o mundo real — um restaurante
+Um restaurante:
+- A **receita e o modo de cozinhar** = regra de negócio (o que faz o restaurante ser ele mesmo).
+- O **fornecedor, o fogão e o sistema de caixa** = detalhes da borda (dá pra trocar sem mudar a receita).
 
-- **Entidades / Casos de uso** = a **receita e o modo de cozinhar** (o que faz o restaurante ser ele mesmo). Não muda se você troca o fornecedor.
-- **Detalhes (borda)** = o **fornecedor de ingredientes, o fogão, o sistema de caixa**. Dá pra trocar o fornecedor sem mudar a receita.
+Se trocar o fogão (o banco de dados) te obriga a reescrever a receita (a regra de negócio), a arquitetura está errada.
 
-Se trocar o fogão (banco de dados) te obriga a reescrever a receita (regra de negócio), a arquitetura está **errada**.
+## No código
 
-## 🔗 Como se conecta com as outras notas do vault
-
-| Conceito do vault | Relação com a Clean Architecture |
-|-------------------|----------------------------------|
-| [[Interfaces e Contratos]] | é o mecanismo central: o núcleo define a interface, a borda implementa |
-| [[Acoplamento e Coesão]] | a Regra da Dependência = baixo acoplamento e núcleo coeso |
-| [[Empacotamento de Componentes]] | empacotar por função ≈ separar por camada/responsabilidade |
-| [[Componentes]] | SGBD, hardware e apps comerciais = os "detalhes" da borda |
-| [[Reuso de Componentes]] | núcleo independente de detalhes → reusável em vários contextos |
-
-## 💻 Exemplo em React + TypeScript
-
-O núcleo (caso de uso) **não conhece** a API nem o React. Ele só conhece uma **interface**. O detalhe (fetch) é plugado na borda.
+O núcleo conhece só uma interface; o detalhe (fetch) é plugado na borda:
 
 ```ts
-// NÚCLEO — regra de negócio, não sabe o que é HTTP nem React
-export interface RepositorioPedidos {
-  buscarPorUsuario(userId: string): Promise<Pedido[]>;
+// núcleo: não sabe o que é HTTP nem React
+interface RepositorioPedidos {
+  buscarPorUsuario(userId: string): Promise<string[]>;
 }
 
-export class ListarPedidosDoUsuario {
-  constructor(private repo: RepositorioPedidos) {} // depende da INTERFACE
+class ListarPedidos {
+  constructor(private repo: RepositorioPedidos) {} // depende da interface
   executar(userId: string) {
     return this.repo.buscarPorUsuario(userId);
   }
 }
 ```
 
-```tsx
-// BORDA — detalhe plugável: implementa a interface usando fetch
-export class RepositorioPedidosHttp implements RepositorioPedidos {
+```ts
+// borda: implementa a interface usando fetch
+class RepositorioPedidosHttp implements RepositorioPedidos {
   async buscarPorUsuario(userId: string) {
     const res = await fetch(`/api/pedidos?user=${userId}`);
     return res.json();
   }
 }
 
-// A tela injeta o detalhe no núcleo. Trocar HTTP por mock/GraphQL não afeta a regra.
-function MeusPedidos({ userId }: { userId: string }) {
-  const caso = new ListarPedidosDoUsuario(new RepositorioPedidosHttp());
-  // ...usa caso.executar(userId) e renderiza...
-  return <div>Lista de pedidos…</div>;
-}
+// trocar fetch por um fake (em teste) não muda o núcleo
+const caso = new ListarPedidos(new RepositorioPedidosHttp());
 ```
 
-## 🔗 Relacionados
+## Hoje em dia
+
+Clean Architecture é atual e muito usada, principalmente em sistemas que vão durar e crescer. As mesmas ideias aparecem com outros nomes: Arquitetura Hexagonal (Ports & Adapters) e Onion Architecture. A essência é sempre a mesma: regra de negócio no centro, detalhes plugáveis na borda.
+
+## Como se liga ao resto do vault
+
+| Conceito | Relação |
+|----------|---------|
+| [[Interfaces e Contratos]] | é o mecanismo central: núcleo define, borda implementa |
+| [[Acoplamento e Coesão]] | a Regra da Dependência = baixo acoplamento |
+| [[Componentes]] | banco, hardware e apps comerciais são os "detalhes" da borda |
+| [[Reuso de Componentes]] | núcleo independente vira reusável |
+
+## Relacionados
 
 - [[Interfaces e Contratos]]
 - [[Acoplamento e Coesão]]
 - [[Empacotamento de Componentes]]
 - [[Componentes]]
-- [[Reuso de Componentes]]
 
 ---
 *Estudo iniciado em 2026-06-01*

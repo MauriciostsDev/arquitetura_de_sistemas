@@ -9,57 +9,49 @@ status: em-estudo
 
 # Abstração
 
-> [!summary] Em uma frase
-> **Abstrair** é pensar no **o quê** (o que algo faz / entrega) em vez do **como** (como faz por dentro), ignorando os detalhes que não importam para quem usa.
+> [!summary] Resumo
+> Abstrair é olhar só para o que uma coisa faz e ignorar como ela faz por dentro.
 
-## 🎯 O que é
+## O que é
 
-Abstração é a ferramenta mental que permite lidar com sistemas grandes sem enlouquecer: você **esconde a complexidade** atrás de algo simples de usar. Você usa uma função, um pacote ou um serviço **sem se preocupar com o conteúdo**.
+Você usa algo sem precisar saber como funciona lá dentro. Quem usa vê o resultado; os detalhes ficam escondidos. Isso deixa o sistema mais fácil de entender e de mudar.
 
-> [!important] Abstrair ≠ esconder por esconder
-> A abstração expõe **o essencial** (o que serve) e oculta **o acidental** (como foi feito). É o que a [[Interfaces e Contratos|interface]] faz: mostra o contrato, esconde a implementação.
+## Exemplo do dia a dia
 
-## 🍔 Analogia do dia a dia — o botão "pagar"
+Apertar "Pagar com Pix" no app. Você só quer pagar. Por trás rola validar cartão, falar com o banco e gerar recibo, mas você não vê nada disso, só a confirmação. Outro caso: dirigir um carro. Você usa volante, freio e acelerador sem saber como o motor funciona. Trocar o motor não muda o jeito de dirigir.
 
-Quando você toca em **"Pagar com Pix"** no iFood:
+## No código
 
-- você só pensa em "quero pagar",
-- por trás acontece muita coisa (validar cartão/chave, falar com o banco, autorizar valor, gerar recibo),
-- mas **nada disso aparece pra você** — você só vê a confirmação.
+Quem chama `pagar` não sabe (nem precisa) como o pagamento acontece:
 
-Você está usando uma **abstração**: a função `cobrar(pedido)` resolve tudo, e os detalhes ficam escondidos.
+```ts
+// quem usa só conhece isto:
+function pagar(pedidoId: string, valor: number): Promise<boolean> {
+  // por dentro: validar cartão, chamar banco, gerar recibo...
+  // quem chama não vê nada disso
+  return Promise.resolve(true);
+}
 
-## 🚗 Outra analogia — dirigir um carro
-
-Você usa o **volante, o acelerador e o freio** (a interface) sem saber como funcionam a injeção eletrônica ou a transmissão (a implementação). Trocar o motor não muda o jeito de dirigir — porque a abstração se mantém.
-
-## 🧱 Níveis de abstração
-
-A arquitetura é feita de **camadas de abstração**, cada uma escondendo a de baixo:
-
-```
-Você ("quero pagar")
-   ↓  abstrai
-Função cobrar(pedido)
-   ↓  abstrai
-Validar cartão · Chamar banco · Gerar recibo
-   ↓  abstrai
-Rede, protocolos, bytes...
+// uso: simples, sem detalhes
+const ok = await pagar("pedido-123", 50);
 ```
 
-Cada nível só precisa entender o nível imediatamente abaixo — não o fundo do poço.
+## Comparação com Clean Architecture
 
-## ✅ Por que importa
+A Clean Architecture vive de abstração: a regra de negócio fala com uma interface (o "o quê") e não sabe se por trás tem banco, API ou outra coisa (o "como"). Ver [[Clean Architecture]].
 
-- **Reduz complexidade**: você raciocina sobre poucos conceitos de cada vez.
-- **Habilita o encapsulamento e o baixo acoplamento** ([[Acoplamento e Coesão]]).
-- É a base para [[Empacotamento de Componentes|empacotar componentes]] e definir [[Interfaces e Contratos|interfaces]].
+## Por que importa
 
-## 🔗 Relacionados
+- Você pensa em poucas coisas de cada vez, não em tudo junto.
+- Permite trocar o "como" sem quebrar quem usa.
+- É a base para [[Empacotamento de Componentes|empacotar]] e criar [[Interfaces e Contratos|interfaces]].
 
-- [[Empacotamento de Componentes]]
+## Relacionados
+
 - [[Interfaces e Contratos]]
 - [[Acoplamento e Coesão]]
+- [[Empacotamento de Componentes]]
+- [[Clean Architecture]]
 
 ---
 *Estudo iniciado em 2026-06-01*

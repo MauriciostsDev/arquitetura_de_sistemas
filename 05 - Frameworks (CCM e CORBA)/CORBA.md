@@ -10,39 +10,28 @@ status: em-estudo
 
 # CORBA
 
-> [!summary] Em uma frase
-> **CORBA** (Common Object Request Broker Architecture) é um padrão antigo de **middleware** que permite objetos em **máquinas e linguagens diferentes** chamarem uns aos outros como se estivessem juntos.
+> [!summary] Resumo
+> CORBA é um padrão antigo de [[Middleware|middleware]] que deixava objetos em máquinas e linguagens diferentes se chamarem como se estivessem juntos.
 
-## 🎯 A ideia, bem simples
+## O que é
 
-Imagina um objeto em **Java** num servidor precisando chamar um objeto em **C++** em outro servidor. Eles nem falam a mesma língua, nem estão no mesmo lugar. O CORBA é o **tradutor universal** no meio que faz essa chamada funcionar.
+Imagine um objeto em Java num servidor precisando chamar um objeto em C++ em outro. Línguas diferentes, lugares diferentes. O CORBA era o tradutor universal no meio. A peça central é o **ORB**: recebe o pedido, acha o objeto certo, entrega a chamada e devolve a resposta. Os contratos eram escritos numa linguagem neutra, a **IDL**.
 
-A peça central é o **ORB** (Object Request Broker): ele recebe o pedido, encontra o objeto certo (onde quer que esteja), entrega a chamada e devolve a resposta. Os contratos são escritos numa linguagem neutra, a **IDL** (Interface Definition Language).
+## Exemplo do dia a dia
 
-> [!note] Onde entra o CCM
-> O [[Framework CCM (CORBA Component Model)]] foi construído **em cima** do CORBA: ele pega esses objetos CORBA e os transforma em **componentes** prontos para plugar (com empacotamento, instalação e execução padronizados).
+Reunião da ONU: um fala português, outro japonês. Os **intérpretes** traduzem em tempo real e todos seguem um protocolo de fala. O ORB é esse intérprete: cada objeto fala sua língua e o CORBA garante o entendimento.
 
-## 🍔 Comparação com o mundo real — intérprete na ONU
+## No código
 
-Numa reunião da ONU, um delegado fala português e outro fala japonês. Eles não se entendem direto — há **intérpretes** que traduzem em tempo real, e todos seguem um **protocolo** comum de fala. O **ORB** é esse intérprete + protocolo: cada objeto fala sua língua, e o CORBA garante o entendimento.
-
-## 🧠 Comparação com a Clean Architecture
-
-> [!info] Conexão com [[Clean Architecture]]
-> CORBA é **middleware** — ou seja, um **detalhe de infraestrutura** (borda externa na Clean Architecture). A regra de negócio **não deveria saber** que a comunicação acontece via CORBA; isso fica escondido atrás de uma [[Interfaces e Contratos|interface]]. Se amanhã trocar CORBA por REST/gRPC, o núcleo não deveria mudar.
-
-## 💻 Exemplo em React + TypeScript
-
-A IDL do CORBA é só um **contrato neutro**. Em TS, o paralelo é definir uma `interface` que esconde **como** a chamada remota acontece:
+A IDL era só um contrato neutro. Hoje, em TS, o equivalente é uma interface que esconde como a chamada remota acontece:
 
 ```ts
-// "IDL" em espírito: o contrato, sem dizer se é CORBA, REST ou gRPC por baixo
-export interface ServicoEstoque {
+// contrato, sem dizer se por baixo é CORBA, REST ou gRPC
+interface ServicoEstoque {
   temEstoque(produtoId: string): Promise<boolean>;
 }
 
-// a implementação concreta (o "ORB" do mundo real) fica escondida
-export class ServicoEstoqueRemoto implements ServicoEstoque {
+class ServicoEstoqueRemoto implements ServicoEstoque {
   async temEstoque(produtoId: string) {
     const res = await fetch(`/api/estoque/${produtoId}`);
     return (await res.json()).disponivel;
@@ -50,17 +39,20 @@ export class ServicoEstoqueRemoto implements ServicoEstoque {
 }
 ```
 
-## ⏳ Contexto histórico
+## Hoje em dia
 
-CORBA foi muito usado nos anos 1990/2000 para integração corporativa. Hoje é considerado **legado** — foi largamente substituído por **REST, gRPC e mensageria**. Mas o **conceito** (objetos remotos conversando via um intermediário padronizado) segue vivo e é a base para entender o [[Framework CCM (CORBA Component Model)|CCM]].
+CORBA é legado, dos anos 1990/2000, e quase não aparece em sistema novo. Foi substituído por **REST**, **gRPC** (que é o parente direto e moderno do CORBA), **GraphQL** e **filas de mensagens**. Mas a ideia central — objetos/serviços remotos conversando por um intermediário com contrato definido — é exatamente o que você usa hoje ao chamar uma API. Entender CORBA ajuda a entender de onde isso tudo veio e o [[Framework CCM (CORBA Component Model)|CCM]].
 
-## 🔗 Relacionados
+## Comparação com Clean Architecture
+
+CORBA é detalhe de infraestrutura (borda). A regra de negócio não deveria saber que a chamada vai por CORBA; isso fica atrás de uma interface. Trocar CORBA por gRPC não deveria mexer no núcleo. Ver [[Clean Architecture]].
+
+## Relacionados
 
 - [[Framework CCM (CORBA Component Model)]]
 - [[Middleware]]
 - [[Distribuição de Componentes]]
 - [[Interfaces e Contratos]]
-- [[Clean Architecture]]
 
 ---
 *Estudo iniciado em 2026-06-01*

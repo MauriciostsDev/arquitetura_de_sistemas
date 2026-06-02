@@ -9,35 +9,26 @@ status: em-estudo
 
 # Programação Declarativa
 
-> [!summary] Em uma frase
-> Programar **declarativamente** é dizer **o quê** você quer e deixar o framework descobrir **como** fazer — em vez de escrever passo a passo na mão (imperativo).
+> [!summary] Resumo
+> Declarativo é dizer o que você quer e deixar o framework descobrir como fazer. Imperativo é escrever o passo a passo na mão.
 
-## 🎯 A ideia, bem simples
+## O que é
 
-- **Imperativo** = você dá **a receita passo a passo**: "faça isso, depois aquilo, depois aquilo outro".
-- **Declarativo** = você diz **o resultado desejado**: "quero isto pronto" — e quem resolve os passos é o framework/ambiente.
+- **Imperativo**: você dá a receita passo a passo ("faça isso, depois aquilo").
+- **Declarativo**: você diz o resultado ("quero isto pronto") e o framework resolve os passos.
 
-No contexto de componentes, isso aparece como **"programação baseada em atributo"**: você **marca/anota** o que um componente precisa (ex.: `@Transacional`, `@RequerLogin`) e o ambiente cuida do resto. Ver [[Ambiente de Componentes]] e [[Serviços de Infraestrutura]].
+Em componentes, isso aparece como anotar o que a peça precisa (`@Transacional`, `@RequerLogin`) e deixar o ambiente cuidar. Ver [[Ambiente de Componentes]].
 
-## 🍔 Comparação com o mundo real — táxi vs. GPS
+## Exemplo do dia a dia
 
-- **Imperativo:** você dá ao motorista **cada conversão**: "vire à direita, siga 200m, vire à esquerda…".
-- **Declarativo:** você diz só **o destino** ("Aeroporto") e o GPS/motorista resolve o caminho.
+GPS. No imperativo você diz cada conversão ("vire à direita, siga 200m"). No declarativo você diz só o destino ("Aeroporto") e o GPS acha o caminho. Você cuida do destino, não do trajeto.
 
-Declarativo = você cuida do **destino**, não do trajeto.
+## No código
 
-## 🧠 Comparação com a Clean Architecture
-
-> [!info] Conexão com [[Clean Architecture]]
-> O estilo declarativo **ajuda** a manter a regra de negócio limpa: detalhes de infraestrutura viram **anotações na borda**, não código no meio do domínio. **Cuidado:** se as anotações forem de um framework específico e estiverem no coração do domínio, o núcleo passa a depender do framework — o oposto do que a Clean Architecture quer. Use o declarativo perto da **borda**.
-
-## 💻 Exemplo em React + TypeScript
-
-React é o exemplo mais didático de declarativo: você **declara a UI** em função do estado, sem manipular o DOM na mão.
+React é o exemplo mais claro: você declara como a tela deve ficar, sem mandar criar/remover elementos:
 
 ```tsx
-// DECLARATIVO: "quando 'carregando', mostre isto; senão, mostre a lista".
-// Você não manda criar/remover elementos — só declara o resultado.
+// declarativo: "se carregando, mostre isto; senão, mostre a lista"
 function ListaPedidos({ carregando, pedidos }: { carregando: boolean; pedidos: string[] }) {
   return carregando
     ? <p>Carregando…</p>
@@ -45,13 +36,17 @@ function ListaPedidos({ carregando, pedidos }: { carregando: boolean; pedidos: s
 }
 ```
 
-## ✅ Por que importa
+Versão imperativa (na mão) seria criar cada `<li>` com `document.createElement` e controlar tudo.
 
-- Código mais **limpo e curto** (menos passos manuais).
-- **Menos erros** de bastidor (o framework já resolve transação, render, etc.).
-- Separa **o quê** (sua intenção) do **como** (o mecanismo) — puro [[Abstração|abstração]].
+## Hoje em dia
 
-## 🔗 Relacionados
+O estilo declarativo é o padrão do desenvolvimento atual: **React** (telas), **SQL** (você pede o resultado, o banco acha o caminho), **Terraform** (você declara a infraestrutura desejada), **CSS**. Saber a diferença ajuda a escolher a ferramenta certa.
+
+## Comparação com Clean Architecture
+
+O declarativo ajuda a manter a regra de negócio limpa (a infra vira anotação na borda). Cuidado: anotações de um framework no coração do domínio prendem o núcleo ao framework. Use perto da borda. Ver [[Clean Architecture]].
+
+## Relacionados
 
 - [[Ambiente de Componentes]]
 - [[Serviços de Infraestrutura]]

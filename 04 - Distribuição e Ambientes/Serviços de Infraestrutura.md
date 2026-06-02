@@ -9,50 +9,52 @@ status: em-estudo
 
 # Serviços de Infraestrutura
 
-> [!summary] Em uma frase
-> São os serviços "de bastidor" que o **[[Ambiente de Componentes|ambiente]]** oferece prontos — **transações, segurança, concorrência** etc. — para que o componente **não precise reimplementá-los** e foque só na regra de negócio.
+> [!summary] Resumo
+> São os serviços de bastidor que o [[Ambiente de Componentes|ambiente]] entrega prontos para o componente não ter que refazer.
 
-## 🎯 A ideia, bem simples
+## O que é
 
-São tarefas que **todo sistema sério precisa**, mas que **não são o negócio em si**. Em vez de cada componente refazer, o ambiente entrega como serviço compartilhado.
+Tarefas que todo sistema sério precisa, mas que não são o negócio em si:
 
-| Serviço | O que faz | Em uma frase |
-|---------|-----------|--------------|
-| **Transações** | tudo acontece ou nada acontece | "cobrou? então registra. Falhou? desfaz tudo." |
-| **Segurança** | autenticação e autorização | "só entra quem pode" |
-| **Concorrência** | vários usuários ao mesmo tempo | "mil pessoas pedindo sem bagunçar os dados" |
+| Serviço | O que faz |
+|---------|-----------|
+| Transações | tudo acontece ou nada acontece (cobrou e falhou? desfaz tudo) |
+| Segurança | só entra quem pode (login e permissão) |
+| Concorrência | mil pessoas ao mesmo tempo sem bagunçar os dados |
 
-## 🍔 Comparação com o mundo real — infraestrutura do prédio
+## Exemplo do dia a dia
 
-Num prédio comercial, você (a empresa) não instala sua própria rede elétrica, nem o elevador, nem contrata segurança da portaria. **O prédio fornece**; você só usa e segue as regras. Serviços de infraestrutura são a "água, luz e portaria" do mundo dos componentes.
+Num prédio comercial, a empresa não instala a própria rede elétrica nem contrata a portaria; o prédio fornece e ela usa. Serviços de infraestrutura são a "água, luz e portaria" do mundo dos componentes.
 
-## 🧠 Comparação com a Clean Architecture
+## No código
 
-> [!info] Conexão com [[Clean Architecture]]
-> Na Clean Architecture, esses serviços são **detalhes da borda** (camada de frameworks & drivers). A regra de negócio **usa** segurança/transação por meio de uma [[Interfaces e Contratos|interface]], mas **não deve depender** de uma implementação específica. Assim você troca o provedor de infraestrutura sem tocar no núcleo.
-
-## 💻 Exemplo em React + TypeScript
-
-A segurança (um serviço de infraestrutura) exposta como contexto reutilizável — telas consomem sem reimplementar login:
+A segurança como um serviço pronto que a tela só consome (não reimplementa):
 
 ```tsx
 type Auth = { usuario: string | null; podeAcessar: (recurso: string) => boolean };
 const AuthContext = createContext<Auth>({ usuario: null, podeAcessar: () => false });
 
-// componente só PERGUNTA ao serviço; não implementa a regra de segurança
 function AreaPagamentos() {
-  const { podeAcessar } = useContext(AuthContext);
+  const { podeAcessar } = useContext(AuthContext); // usa o serviço pronto
   if (!podeAcessar("pagamentos")) return <p>Acesso negado</p>;
   return <PainelPagamentos />;
 }
 ```
 
-## 🔗 Relacionados
+## Hoje em dia
+
+Esses serviços continuam essenciais, só vêm de outras fontes: o **banco de dados** cuida de transações, provedores como **Auth0/Firebase Auth** cuidam de segurança, e a **nuvem** cuida de escala e concorrência. Você raramente escreve isso do zero.
+
+## Comparação com Clean Architecture
+
+São detalhes da borda. A regra de negócio usa segurança/transação por uma interface, sem depender do provedor específico — assim dá para trocar sem mexer no núcleo. Ver [[Clean Architecture]].
+
+## Relacionados
 
 - [[Ambiente de Componentes]]
 - [[Programação Declarativa]]
-- [[Clean Architecture]]
 - [[Middleware]]
+- [[Clean Architecture]]
 
 ---
 *Estudo iniciado em 2026-06-01*
