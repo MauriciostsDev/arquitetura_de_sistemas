@@ -5,8 +5,37 @@
   "showAttachments": false,
   "hideUnresolved": false,
   "showOrphans": true,
-  "collapse-color-groups": true,
-  "colorGroups": [],
+  "collapse-color-groups": false,
+  "colorGroups": [
+    {
+      "query": "path:\"01 - Fundamentos\"",
+      "color": { "a": 1, "rgb": 3900150 }
+    },
+    {
+      "query": "path:\"02 - Componentes\"",
+      "color": { "a": 1, "rgb": 1483594 }
+    },
+    {
+      "query": "path:\"03 - Implementação e Qualidade\"",
+      "color": { "a": 1, "rgb": 14251782 }
+    },
+    {
+      "query": "path:\"04 - Distribuição e Ambientes\"",
+      "color": { "a": 1, "rgb": 8141549 }
+    },
+    {
+      "query": "path:\"05 - Frameworks (CCM e CORBA)\"",
+      "color": { "a": 1, "rgb": 14427686 }
+    },
+    {
+      "query": "path:\"06 - Referência\"",
+      "color": { "a": 1, "rgb": 889992 }
+    },
+    {
+      "query": "file:Bem-vindo",
+      "color": { "a": 1, "rgb": 16777215 }
+    }
+  ],
   "collapse-display": true,
   "showArrow": false,
   "textFadeMultiplier": 0,
@@ -17,6 +46,6 @@
   "repelStrength": 10,
   "linkStrength": 1,
   "linkDistance": 250,
-  "scale": 0.7023319615912207,
+  "scale": 0.46822130772748005,
   "close": true
 }
